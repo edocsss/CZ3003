@@ -1,0 +1,20 @@
+<template name="loginDropdown">
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+			Sign In
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li>
+				<!-- PUT FORM HERE -->
+				<div class="container-fluid form-container">
+					{{#if isLoginForm}}
+						{{> loginForm}}
+					{{else}}
+						{{> forgotPasswordForm}}
+					{{/if}}
+				</div>
+			</li>
+		</ul>
+	</li>
+</template>
