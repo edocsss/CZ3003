@@ -4,8 +4,8 @@ Template.loginForm.onRendered(function () {
 			var email = $('[name=email').val();
 			var password = $('[name=password]').val();
 
+			console.log(email, password);
 			Meteor.loginWithPassword(email, password, function (error) {
-				console.log(error);
 				if (error) {
 					if (error.reason == "User not found") {
 						loginValidator.showErrors({
