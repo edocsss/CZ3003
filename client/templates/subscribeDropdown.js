@@ -1,33 +1,26 @@
-Template.loginForm.onRendered(function () {
-	var loginValidator = $('form').validate({
-		submitHandler: function (event) {
+Template.subscribeDropdown.onRendered(function () {
+	var subscribeValidator = $('form').validate({
+		submitHandler: function (form, event) {
+			event.preventDefault();
+
 			var email = $('[name=email]').val();
-			var password = $('[name=password]').val();
-
-			Meteor.loginWithPassword(email, password, function (error) {
+			Meteor.call('addSubscriber', email, function (error, result) {
 				if (error) {
-					if (error.reason == "User not found") {
-						loginValidator.showErrors({
-							email: error.reason
-						});
-					}
-
-					if (error.reason == "Incorrect password") {
-						loginValidator.showErrors({
-							password: error.reason
-						});
-					}
+					subscribeValidator.showErrors({
+						email: error.error
+					});
+				} else {
+					swal('Your email has been successfully subscribed!');
+					// Send confirmation email with unsubscription link
 				}
 			});
+
+			return false;
 		},
 		rules: {
 			email: {
 				minlength: 3,
 				maxlength: 50,
-				required: true
-			},
-			password: {
-				minlength: 6,
 				required: true
 			}
 		},
@@ -36,10 +29,6 @@ Template.loginForm.onRendered(function () {
 				required: "You must enter an email address!",
 				minlength: "Your email address must be between 3 to 50 characters!",
 				maxlength: "Your email address must be between 3 to 50 characters!"
-			},
-			password: {
-				required: "You must enter your password!",
-				minlength: "Your must be at least 6 characters!"
 			}
 		},
 		highlight: function (element) {
@@ -60,10 +49,4 @@ Template.loginForm.onRendered(function () {
 			}
 		}
 	});
-});
-
-Template.loginForm.events({
-	'click .forgot-password-link': function () {
-		Session.set('isLoginForm', false);
-	}
 });

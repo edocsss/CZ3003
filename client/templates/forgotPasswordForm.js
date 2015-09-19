@@ -2,18 +2,8 @@ Template.forgotPasswordForm.onRendered(function () {
 	var forgotPasswordValidator = $('form').validate({
 		submitHandler: function (event) {
 			var email = $('[name=email').val();
-			var password = $('[name=password]').val();
 
-			Meteor.loginWithPassword(email, password, function (error) {
-				console.log(error);
-				if (error) {
-					if (error.reason == "User not found") {
-						forgotPasswordValidator.showErrors({
-							email: error.reason
-						});
-					}
-				}
-			});
+			// DO SOMETHING WITH FORGOT PASSWORD HERE!
 		},
 		rules: {
 			email: {
