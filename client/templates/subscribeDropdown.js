@@ -1,5 +1,5 @@
 Template.subscribeDropdown.onRendered(function () {
-	var subscribeValidator = $('form').validate({
+	var subscribeValidator = $('#subscribe-form').validate({
 		submitHandler: function (form, event) {
 			event.preventDefault();
 

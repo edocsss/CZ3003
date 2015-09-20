@@ -1,5 +1,5 @@
 Template.forgotPasswordForm.onRendered(function () {
-	var forgotPasswordValidator = $('form').validate({
+	var forgotPasswordValidator = $('#forgot-password-form').validate({
 		submitHandler: function (event) {
 			var email = $('[name=email').val();
 

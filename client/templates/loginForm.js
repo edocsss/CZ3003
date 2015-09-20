@@ -1,5 +1,5 @@
 Template.loginForm.onRendered(function () {
-	var loginValidator = $('form').validate({
+	var loginValidator = $('#login-form').validate({
 		submitHandler: function (event) {
 			var email = $('[name=email]').val();
 			var password = $('[name=password]').val();
