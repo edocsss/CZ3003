@@ -1,8 +1,8 @@
 Template.loginForm.onRendered(function () {
 	var loginValidator = $('#login-form').validate({
 		submitHandler: function (event) {
-			var email = $('[name=email]').val();
-			var password = $('[name=password]').val();
+			var email = $('#login-email').val();
+			var password = $('#login-password').val();
 
 			Meteor.loginWithPassword(email, password, function (error) {
 				if (error) {

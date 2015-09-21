@@ -10,3 +10,4 @@ twbs:bootstrap
 iron:router
 themeteorchef:jquery-validation
 dburles:google-maps
+insecure

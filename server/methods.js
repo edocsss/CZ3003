@@ -5,6 +5,7 @@ Meteor.methods({
 		var s = Subscribers.findOne({
 			email: emailAddress
 		});
+		console.log(s);
 
 		if (s) {
 			throw new Meteor.Error("Your email address has been subscribed previously!");
