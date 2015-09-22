@@ -17,11 +17,18 @@ Router.route('/cases', {
 
 		// When there is a logged in user, then it is either an Admin or Call Center Operator
 		// So, either users can see the cases
-		console.log(user);
 		if (!user) {
 			Router.go('/');
 		} else {
 			this.next();
 		}
+	}
+});
+
+Router.route('/reset-password/:token', {
+	template: 'resetPasswordForm',
+	onBeforeAction: function () {
+		Accounts._resetPasswordToken = this.params.token;
+		this.next();
 	}
 });

@@ -4,10 +4,20 @@ Template.forgotPasswordForm.onRendered(function () {
 			event.preventDefault();
 			var email = $('#forgot-email').val();
 
-			// DO SOMETHING WITH FORGOT PASSWORD HERE!
-			console.log("SENDING EMAIL");
-			console.log(email);
-			Meteor.call('sendEmail', email, 'no-reply@cms.com', '', '');
+			// Send forgot password	email
+			Accounts.forgotPassword({
+				email: email
+			}, function (error) {
+				if (error) {
+					if (error.message === 'User not found [403]') {
+						forgotPasswordValidator.showErrors({
+							email: "We cannot find you email address in our database!"
+						});
+					}
+				} else {
+					swal("EMAIL SENT!");
+				}
+			});
 		},
 		rules: {
 			email: {

@@ -10,12 +10,10 @@ Template.subscribeDropdown.onRendered(function () {
 						email: error.error
 					});
 				} else {
-					swal('Your email has been successfully subscribed!');
+					swal('Subscription', 'Your email has been successfully subscribed!', 'success');
 					// Send confirmation email with unsubscription link
 				}
 			});
-
-			return false;
 		},
 		rules: {
 			email: {

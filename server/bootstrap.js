@@ -15,5 +15,19 @@ Meteor.startup(function () {
 				type: 'call-center-operator'
 			}
 		});
+
+		Accounts.createUser({
+			email: 'edocsss@gmail.com',
+			password: '123456',
+			profile: {
+				type: 'admin'
+			}
+		});
 	}
+
+	// Setting up FORGOT PASSWORD URL TEMPLATE
+	Accounts.emailTemplates.resetPassword.text = function (user, url) {
+		url = url.replace('#/', '');
+		return "Hi there, " + "\n\n" + "To reset your password, simply open the link below:" + "\n" + url + "\n\n" + "Thanks!";
+	};
 });

@@ -1,5 +1,5 @@
 Meteor.methods({
-	'addSubscriber': function (emailAddress) {
+	addSubscriber: function (emailAddress) {
 		// Check whether this emailAddress exists in DB
 		// If it exists, return a Meteor Error
 		var s = Subscribers.findOne({
@@ -15,9 +15,11 @@ Meteor.methods({
 			createdOn: new Date()
 		});
 	},
-	'checkSubscriber': function () {
+
+	checkSubscriber: function () {
 		console.log(Subscribers.find().count());
 	},
+
 	sendEmail: function (to, from, subject, text) {
 		check([to, from, subject, text], [String]);
 		this.unblock();
