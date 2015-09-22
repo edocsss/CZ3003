@@ -1,9 +1,13 @@
 Template.forgotPasswordForm.onRendered(function () {
 	var forgotPasswordValidator = $('#forgot-password-form').validate({
-		submitHandler: function (event) {
-			var email = $('[name=email').val();
+		submitHandler: function (form, event) {
+			event.preventDefault();
+			var email = $('#forgot-email').val();
 
 			// DO SOMETHING WITH FORGOT PASSWORD HERE!
+			console.log("SENDING EMAIL");
+			console.log(email);
+			Meteor.call('sendEmail', email, 'no-reply@cms.com', '', '');
 		},
 		rules: {
 			email: {
