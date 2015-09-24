@@ -32,3 +32,11 @@ Router.route('/reset-password/:token', {
 		this.next();
 	}
 });
+
+Router.route('/unsubscribe/:subscriberId', {
+	template: 'unsubscribeForm',
+	onBeforeAction: function () {
+		Session.set('subscriberId', this.params.subscriberId);
+		this.next();
+	}
+});

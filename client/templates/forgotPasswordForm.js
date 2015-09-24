@@ -15,7 +15,7 @@ Template.forgotPasswordForm.onRendered(function () {
 						});
 					}
 				} else {
-					swal("EMAIL SENT!");
+					swal('Forgot Password', 'An email indicating how to reset your password has been successfully sent!', 'success');
 				}
 			});
 		},
