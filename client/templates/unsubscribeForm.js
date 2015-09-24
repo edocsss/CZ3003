@@ -9,7 +9,7 @@ Template.unsubscribeForm.events({
 			} else {
 				swal('Unsubscription', 'Your email address has been successfully removed from our mailing list!', 'success');
 				Session.set('subscriberId', null);
-				Router.go('/');
+				Router.go('home');
 			}
 		});
 	},

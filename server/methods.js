@@ -98,5 +98,35 @@ Meteor.methods({
 
 		// Send the summary to PM
 		// Meteor.call('sendEmail', 'primeminister@gov.sg', 'ID70CMS@gov.sg', 'Periodic CMS Case Sumary', message);
+	},
+
+	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	addAgency: function () {
+
+	},
+
+	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	editAgency: function () {
+
+	},
+
+	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	deleteAgency: function () {
+
+	},
+
+	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	addCallCenterOperator: function () {
+
+	},
+
+	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	editCallCenterOperator: function () {
+
+	},
+
+	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	deleteCallCenterOperator: function () {
+
 	}
 });

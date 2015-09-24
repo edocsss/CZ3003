@@ -28,7 +28,7 @@ Template.resetPasswordForm.onRendered(function () {
 					} else {
 						Session.set('resetPasswordTokn', null);
 						swal('Reset Password', 'Your password has been successfully changed!', 'success');
-						Router.go('/');
+						Router.go('home');
 					}
 				});
 			}

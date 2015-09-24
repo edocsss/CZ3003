@@ -11,7 +11,6 @@ Template.subscribeDropdown.onRendered(function () {
 					});
 				} else {
 					swal('Subscription', 'Your email has been successfully subscribed!', 'success');
-					// Send confirmation email with unsubscription link
 				}
 			});
 		},
