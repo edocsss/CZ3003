@@ -1,3 +1,4 @@
 Subscribers = new Mongo.Collection('subcribers');
 Cases = new Mongo.Collection('cases');
 Agencies = new Mongo.Collection('agencies');
+CallCenterOperators = new Mongo.Collection('callcenteroperators');

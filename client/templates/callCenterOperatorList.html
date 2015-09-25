@@ -1,0 +1,116 @@
+<template name="callCenterOperatorList">
+	<div class="container-fluid call-center-operator-list-container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h3 class="text-center">Call Center Operator List</h3>
+			</div>
+		</div>
+
+		<div class="row" id="add-operator-row">
+			<button type="submit" class="btn btn-primary pull-right" id="add-operator-button" data-toggle="modal" data-target="#add-operator-modal">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				&nbsp;
+				<b>Add Operator</b>
+			</button>
+		</div>
+
+		<div class="row ">
+			<div class="table-responsive">
+				<table class="table table-striped" id="call-center-operator-table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email Address</th>
+							<th>Contact Number</th>
+							<th>Address</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						{{#unless isEmptyOperatorList}}
+							{{#each operatorList}}
+								{{> callCenterOperatorItem}}
+							{{/each}}
+						{{else}}
+							<tr>
+								<td colspan="5">
+									<i>There is no Call Center Operator registered in the database!</i>
+								</td>
+							</tr>
+						{{/unless}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- ADD CALL CENTER OPERATOR MODAL!! -->
+	<div class="modal fade" id="add-operator-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title text-center">Add Call Center Operator</h3>
+				</div>
+
+				<div class="modal-body">
+					<div class="container-fluid">
+						<form class="form-horizontal center-block" id="add-operator-form">
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="text" class="form-control" name="name" placeholder="Name" id="add-operator-name">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="email" class="form-control" name="email" placeholder="Email Address" id="add-operator-email">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="text" class="form-control" name="contact" placeholder="Contact Number" maxlength="8" id="add-operator-contact">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="text" class="form-control" name="address" placeholder="Address" id="add-operator-address">
+								</div>
+							</div>
+					
+							<div class="form-group">
+								<div class="col-xs-offset-3 col-xs-3">
+									<button type="submit" class="btn btn-primary center-block">Add</button>
+								</div>
+
+								<div class="col-xs-3">
+									<button type="button" class="btn btn-danger center-block" data-dismiss="modal">Cancel</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="callCenterOperatorItem">
+	<tr>
+		<td>{{this.profile.name}}</td>
+		<td>{{this.profile.email}}</td>
+		<td>{{this.profile.contact}}</td>
+		<td>{{this.profile.address}}</td>
+		<td>
+			<div class="col-xs-offset-1 col-xs-5">
+				<button type="button" class="btn btn-primary" id="edit-operator-button">Edit</button>
+			</div>
+
+			<div class="col-xs-5">
+				<button type="button" class="btn btn-danger" id="delete-operator-button">Delete</button>
+			</div>
+		</td>
+	</tr>
+</template>

@@ -1,3 +1,8 @@
 .help-block {
 	margin-bottom: 0;
 }
+
+.row {
+	margin-left: auto !important; 
+	margin-right: auto !important;
+}

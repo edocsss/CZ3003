@@ -9,8 +9,6 @@ twbs:bootstrap
 iron:router
 themeteorchef:jquery-validation
 dburles:google-maps
-insecure
-autopublish
 email
 standard-minifiers
 meteor-base
@@ -33,3 +31,4 @@ meteorhacks:npm
 
 npm-container
 meteorhacks:ssr
+autopublish

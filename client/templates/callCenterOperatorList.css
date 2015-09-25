@@ -1,0 +1,29 @@
+.call-center-operator-list-container {
+	padding-left: 70px;
+	padding-right: 70px;
+}
+
+#add-operator-row {
+	margin-bottom: 1.5em;
+}
+
+#add-operator-button {
+	width: 13em;
+}
+
+#call-center-operator-table {
+	font-size: 14px;
+}
+
+#call-center-operator-table th {
+	font-size: 16px;
+	text-align: center;
+}
+
+#call-center-operator-table td {
+	vertical-align: middle;
+}
+
+.modal-header {
+	padding-bottom: 0;
+}

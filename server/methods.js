@@ -116,17 +116,55 @@ Meteor.methods({
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
-	addCallCenterOperator: function () {
+	addCallCenterOperator: function (name, email, contact, address) {
+		var currentUser = Meteor.user();
+		if (currentUser.profile.type !== 'admin') {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
 
+		// NO PASSWORD INITIALLY!!
+		var newOperatorId = Accounts.createUser({
+			email: email,
+			profile: {
+				name: name,
+				email: email,		// A hack, because if not, the client cannot get the users email --> can only see this user's email
+				contact: contact,
+				address: address,
+				type: 'call-center-operator',
+				createdOn: new Date(),
+				createdBy: currentUser.emails[0].address
+			}
+		});
+
+		Accounts.sendEnrollmentEmail(newOperatorId);
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
-	editCallCenterOperator: function () {
+	editCallCenterOperator: function (userId, name, contact, address) {
+		var currentUser = Meteor.user();
+		if (currentUser.profile.type !== 'admin') {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
 
+		var profile = Meteor.users.findOne(userId).profile;
+		profile.name = name;
+		profile.contact = contact;
+		profile.address = address;
+
+		Meteor.users.update(userId, {
+			$set: {
+				profile: profile
+			}
+		});
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
-	deleteCallCenterOperator: function () {
+	deleteCallCenterOperator: function (userId) {
+		var currentUser = Meteor.user();
+		if (currentUser.profile.type !== 'admin') {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
 
+		Meteor.users.remove(userId);
 	}
 });

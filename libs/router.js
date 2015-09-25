@@ -17,6 +17,15 @@ Router.route('resetPasword', {
 	}
 });
 
+Router.route('enrollAccount', {
+	path: '/enroll-account/:token',
+	template: 'enrollAccountForm',
+	onBeforeAction: function () {
+		Accounts._resetPasswordToken = this.params.token;
+		this.next();
+	}
+});
+
 Router.route('unsubscribe', {
 	path: '/unsubscribe/:subscriberId',
 	template: 'unsubscribeForm',
@@ -51,5 +60,40 @@ Router.route('agencies', {
 });
 
 Router.route('operators', {
-	path: '/operators'
+	path: '/operators',
+	template: 'callCenterOperatorList',
+	onBeforeAction: function () {
+		var userId = Meteor.userId();
+		if (userId) {
+			var user = Meteor.users.findOne(userId);
+			if (user.profile.type === 'admin') {
+				this.next();
+			} else {
+				this.redirect('home');
+			}
+		} else {
+			this.redirect('home');
+		}
+	}
+});
+
+Router.route('editOperator', {
+	path: '/edit-operator/:_id',
+	template: 'editCallCenterOperator',
+	data: function () {
+		return Meteor.users.findOne({_id: this.params._id});
+	},
+	onBeforeAction: function () {
+		var userId = Meteor.userId();
+		if (userId) {
+			var user = Meteor.users.findOne(userId);
+			if (user.profile.type === 'admin') {
+				this.next();
+			} else {
+				this.redirect('home');
+			}
+		} else {
+			this.redirect('home');
+		}
+	}
 });

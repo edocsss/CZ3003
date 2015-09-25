@@ -1,0 +1,43 @@
+<template name="editCallCenterOperator">
+	<div class="row">
+		<div class="col-xs-12">
+			<h3 class="text-center">Edit Call Center Operator</h3>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-offset-3 col-xs-6">
+			<form class="form-horizontal center-block" id="edit-operator-form">
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="name" value="{{this.profile.name}}" placeholder="Name" id="edit-operator-name">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="contact" value="{{this.profile.contact}}" placeholder="Contact Number" maxlength="8" id="edit-operator-contact">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="address" placeholder="Address" value="{{this.profile.address}}" id="edit-operator-address">
+					</div>
+				</div>
+		
+				<div class="form-group">
+					<div class="col-xs-offset-3 col-xs-3">
+						<button type="submit" class="btn btn-primary center-block">Edit</button>
+					</div>
+					
+					<div class="col-xs-3">
+						<button type="button" class="btn btn-danger" id="edit-back-button">
+							Back
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</template>

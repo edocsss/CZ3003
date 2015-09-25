@@ -1,54 +1,54 @@
-Template.resetPasswordForm.onCreated(function () {
+Template.enrollAccountForm.onCreated(function () {
 	if (Accounts._resetPasswordToken) {
-		Session.set('resetPasswordToken', Accounts._resetPasswordToken);
+		Session.set('enrollAccountToken', Accounts._resetPasswordToken);
 	}
 });
 
-Template.resetPasswordForm.onRendered(function () {
-	var resetPasswordValidator = $('#reset-password-form').validate({
+Template.enrollAccountForm.onRendered(function () {
+	var enrollAccountValidator = $('#enroll-account-form').validate({
 		submitHandler: function (form, event) {
 			event.preventDefault();
-			var password = $('#reset-password').val();
-			var confirmPassword = $('#reset-confirm-password').val();
+			var password = $('#enroll-password').val();
+			var confirmPassword = $('#enroll-confirm-password').val();
 
 			if (password !== confirmPassword) {
-				resetPasswordValidator.showErrors({
-					'confirm-new-password': 'Password mismatch!'
+				enrollAccountValidator.showErrors({
+					'confirm-enroll-password': 'Password mismatch!'
 				});
 
 				return false;
 			} else {
-				var resetToken = Session.get('resetPasswordToken');
+				var resetToken = Session.get('enrollAccountToken');
 
 				// REMEMBER!!
 				// This will log the user into the system automatically!
 				Accounts.resetPassword(resetToken, confirmPassword, function (error) {
 					if (error) {
-						swal('Reset Password', 'We are sorry but something went wrong and your password has not been changed yet', 'error');
+						swal('Set Password', 'We are sorry but something went wrong and your password has not been changed yet', 'error');
 					} else {
-						Session.set('resetPasswordToken', null);
-						swal('Reset Password', 'Your password has been successfully changed!', 'success');
+						Session.set('enrollAccountToken', null);
+						swal('Set Password', 'Your password has been successfully set!', 'success');
 						Router.go('home');
 					}
 				});
 			}
 		},
 		rules: {
-			'new-password': {
+			'enroll-password': {
 				minlength: 6,
 				required: true
 			},
-			'confirm-new-password': {
+			'confirm-enroll-password': {
 				minlength: 6,
 				required: true
 			}
 		},
 		messages: {
-			'new-password': {
+			'enroll-password': {
 				required: "You must enter your new password!",
 				minlength: "Your must be at least 6 characters!"
 			},
-			'confirm-new-password': {
+			'confirm-enroll-password': {
 				required: "You must confirm your new password!",
 				minlength: "Your must be at least 6 characters!"
 			}
