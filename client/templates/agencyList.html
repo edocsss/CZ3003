@@ -1,0 +1,128 @@
+<template name="agencyList">
+	<div class="container-fluid agency-list-container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h3 class="text-center">Agency List</h3>
+			</div>
+		</div>
+
+		<div class="row" id="add-agency-row">
+			<button type="submit" class="btn btn-primary pull-right" id="add-agency-button" data-toggle="modal" data-target="#add-agency-modal">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				&nbsp;
+				<b>Add Agency</b>
+			</button>
+		</div>
+
+		<div class="row ">
+			<div class="table-responsive">
+				<table class="table table-striped" id="agency-table">
+					<thead>
+						<tr>
+							<th>Agency Name</th>
+							<th>Email Address</th>
+							<th>Category</th>
+							<th>Contact Number</th>
+							<th>Address</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						{{#unless isEmptyAgencyList}}
+							{{#each agencyList}}
+								{{> agencyItem}}
+							{{/each}}
+						{{else}}
+							<tr>
+								<td colspan="6" class="text-center">
+									<i>There is no Agency registered in the database!</i>
+								</td>
+							</tr>
+						{{/unless}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- ADD AGENCY MODAL!! -->
+	<div class="modal fade" id="add-agency-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title text-center">Add Agency</h3>
+				</div>
+
+				<div class="modal-body">
+					<div class="container-fluid">
+						<form class="form-horizontal center-block" id="add-agency-form">
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="text" class="form-control" name="name" placeholder="Agency Name" id="add-agency-name">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="email" class="form-control" name="email" placeholder="Agency Email Address" id="add-agency-email">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<select class="form-control" name="category" id="add-agency-category">
+										<option value="select" selected>Select Agency Category</option>
+										<option value="Traffic Accidents">Traffic Accidents</option>
+										<option value="Fire Emergency">Fire Emergency</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="text" class="form-control" name="contact" placeholder="Agency Contact Number" maxlength="8" id="add-agency-contact">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-offset-1 col-xs-10">
+									<input type="text" class="form-control" name="address" placeholder="Agency Address" id="add-agency-address">
+								</div>
+							</div>
+					
+							<div class="form-group">
+								<div class="col-xs-offset-3 col-xs-3">
+									<button type="submit" class="btn btn-primary center-block">Add</button>
+								</div>
+
+								<div class="col-xs-3">
+									<button type="button" class="btn btn-danger center-block" data-dismiss="modal">Cancel</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="agencyItem">
+	<tr>
+		<td>{{this.name}}</td>
+		<td>{{this.email}}</td>
+		<td>{{this.category}}</td>
+		<td>{{this.contact}}</td>
+		<td>{{this.address}}</td>
+		<td>
+			<div class="col-xs-offset-1 col-xs-5">
+				<button type="button" class="btn btn-primary" id="edit-agency-button">Edit</button>
+			</div>
+
+			<div class="col-xs-5">
+				<button type="button" class="btn btn-danger" id="delete-agency-button">Delete</button>
+			</div>
+		</td>
+	</tr>
+</template>

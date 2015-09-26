@@ -101,18 +101,66 @@ Meteor.methods({
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
-	addAgency: function () {
+	addAgency: function (name, email, category, contact, address) {
+		var currentUser = Meteor.user();
+		if (currentUser.profile.type !== 'admin') {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
 
+		if (Agencies.findOne({
+			$or: [
+				{ name: name },
+				{ email: email },
+			]
+		})) {
+			throw new Meteor.Error("Agency registered", "An agency with this name or email has been registered in our database!");
+		}
+
+		Agencies.insert({
+			name: name,
+			email: email,
+			category: category,
+			contact: contact,
+			address: address,
+			createdBy: Meteor.user().email,
+			createdOn: new Date()
+		});
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
-	editAgency: function () {
+	editAgency: function (agencyId, name, category, contact, address) {
+		var currentUser = Meteor.user();
+		if (currentUser.profile.type !== 'admin') {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
 
+		if (Agencies.findOne({
+			$or: [
+				{ name: name },
+				{ email: email },
+			]
+		})) {
+			throw new Meteor.Error("Agency registered", "An agency with this name or email has been registered in our database!");
+		}
+
+		Agencies.update(agencyId, {
+			$set: {
+				name: name,
+				category: category,
+				contact: contact,
+				address: address
+			}
+		});
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
-	deleteAgency: function () {
+	deleteAgency: function (agencyId) {
+		var currentUser = Meteor.user();
+		if (currentUser.profile.type !== 'admin') {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
 
+		Agencies.remove(agencyId);
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL

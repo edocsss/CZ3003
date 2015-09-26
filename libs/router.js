@@ -56,7 +56,42 @@ Router.route('cases', {
 });
 
 Router.route('agencies', {
-	path: '/agencies'
+	path: '/agencies',
+	template: 'agencyList',
+	onBeforeAction: function () {
+		var userId = Meteor.userId();
+		if (userId) {
+			var user = Meteor.users.findOne(userId);
+			if (user.profile.type === 'admin') {
+				this.next();
+			} else {
+				this.redirect('home');
+			}
+		} else {
+			this.redirect('home');
+		}
+	}
+});
+
+Router.route('editAgency', {
+	path: '/edit-agency/:_id',
+	template: 'editAgency',
+	data: function () {
+		return Agencies.findOne({_id: this.params._id});
+	},
+	onBeforeAction: function () {
+		var userId = Meteor.userId();
+		if (userId) {
+			var user = Meteor.users.findOne(userId);
+			if (user.profile.type === 'admin') {
+				this.next();
+			} else {
+				this.redirect('home');
+			}
+		} else {
+			this.redirect('home');
+		}
+	}
 });
 
 Router.route('operators', {

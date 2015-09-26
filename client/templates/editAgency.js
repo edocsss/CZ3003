@@ -1,30 +1,42 @@
-Template.editCallCenterOperator.onRendered(function () {
-	var userId = this.data._id;
-	var editOperatorValidator = $('#edit-operator-form').validate({
+Template.editAgency.onRendered(function () {
+	var agencyId = this.data._id;
+	var editAgencyValidator = $('#edit-agency-form').validate({
 	 	submitHandler: function (form, event) {
 	 		event.preventDefault();
 
-	 		var name = $('#edit-operator-name').val();
-	 		var contact = $('#edit-operator-contact').val();
-	 		var address = $('#edit-operator-address').val();
+	 		var name = $('#edit-agency-name').val();
+	 		var category = $('#edit-agency-category').val();
+	 		var contact = $('#edit-agency-contact').val();
+	 		var address = $('#edit-agency-address').val();
 
-	 		Meteor.call('editCallCenterOperator', userId, name, contact, address, function (error, result) {
-	 			if (error) {
-	 				swal('Edit Call Center Operator', error.reason, 'error');
-	 			} else {
-	 				swal({
-	 					title: 'Edit Call Center Operator',
-	 					text: 'The call center operator has successfully been edited!',
-	 					type: 'success'
-	 				});
-	 			}
-	 		});
+	 		if (category === 'select') {
+	 			editAgencyValidator.showErrors({
+	 				category: 'Please select the correct agency category!'
+	 			});
+
+	 			return false;
+	 		} else {
+		 		Meteor.call('editAgency', agencyId, name, category, contact, address, function (error, result) {
+		 			if (error) {
+		 				swal('Edit Agency', error.reason, 'error');
+		 			} else {
+		 				swal({
+		 					title: 'Edit Agency',
+		 					text: 'The agency has successfully been edited!',
+		 					type: 'success'
+		 				});
+		 			}
+		 		});
+		 	}
 	 	},
 	 	rules: {
 	 		name: {
 	 			minlength: 3,
 	 			maxlength: 50,
 	 			required: true
+	 		},
+	 		category: {
+	 			categoryCheck: true
 	 		},
 	 		contact: {
 	 			minlength: 8,
@@ -76,8 +88,19 @@ Template.editCallCenterOperator.onRendered(function () {
 	 });
 });
 
-Template.editCallCenterOperator.events({
-	'click #edit-operator-back-button': function () {
-		Router.go('operators');
+// jQuery validator add-on methods
+jQuery.validator.addMethod("categoryCheck", function(value, element) {
+    return this.optional(element) || /[^{select}]/.test(value);
+}, "Please select the correct agency category!");
+
+Template.editAgency.helpers({
+	isCategorySelected: function (k) {
+		return k === this.category;
+	}
+});
+
+Template.editAgency.events({
+	'click #edit-agency-back-button': function () {
+		Router.go('agencies');
 	}
 });

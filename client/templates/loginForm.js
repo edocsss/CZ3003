@@ -17,6 +17,10 @@ Template.loginForm.onRendered(function () {
 							password: error.reason
 						});
 					}
+
+					if (error.reason != "User not found" & error.reason != "Incorrect password") {
+						swal('Login', error.reason, 'error');
+					}
 				}
 			});
 		},

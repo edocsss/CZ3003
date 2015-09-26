@@ -1,0 +1,53 @@
+<template name="editAgency">
+	<div class="row">
+		<div class="col-xs-12">
+			<h3 class="text-center">Edit Agency</h3>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-offset-3 col-xs-6">
+			<form class="form-horizontal center-block" id="edit-agency-form">
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="name" value="{{this.name}}" placeholder="Agency Name" id="edit-agency-name">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10">
+						<select class="form-control" name="category" id="edit-agency-category">
+							<option value="select" selected="{{isCategorySelected 'select'}}">Select Agency Category</option>
+							<option value="Traffic Accidents" selected="{{isCategorySelected 'Traffic Accidents'}}">Traffic Accidents</option>
+							<option value="Fire Emergency" selected="{{isCategorySelected 'Fire Emergency'}}">Fire Emergency</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="contact" value="{{this.contact}}" placeholder="Agency Contact Number" maxlength="8" id="edit-agency-contact">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10">
+						<input type="text" class="form-control" name="address" placeholder="Agency Address" value="{{this.address}}" id="edit-agency-address">
+					</div>
+				</div>
+		
+				<div class="form-group">
+					<div class="col-xs-offset-3 col-xs-3">
+						<button type="submit" class="btn btn-primary center-block">Edit</button>
+					</div>
+					
+					<div class="col-xs-3">
+						<button type="button" class="btn btn-danger" id="edit-agency-back-button">
+							Back
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</template>

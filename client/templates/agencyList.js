@@ -1,27 +1,36 @@
-Template.callCenterOperatorList.onRendered(function () {
-	 var addOperatorValidator = $('#add-operator-form').validate({
+Template.agencyList.onRendered(function () {
+	 var addAgencyValidator = $('#add-agency-form').validate({
 	 	submitHandler: function (form, event) {
 	 		event.preventDefault();
 
-	 		var name = $('#add-operator-name').val();
-	 		var email = $('#add-operator-email').val();
-	 		var contact = $('#add-operator-contact').val();
-	 		var address = $('#add-operator-address').val();
+	 		var name = $('#add-agency-name').val();
+	 		var email = $('#add-agency-email').val();
+	 		var category = $('#add-agency-category').val();
+	 		var contact = $('#add-agency-contact').val();
+	 		var address = $('#add-agency-address').val();
 
-	 		Meteor.call('addCallCenterOperator', name, email, contact, address, function (error, result) {
-	 			if (error) {
-	 				swal('Add Call Center Operator', error.reason, 'error');
-	 			} else {
-	 				swal({
-	 					title: 'Add Call Center Operator',
-	 					text: 'The new call center operator has successfully been added!',
-	 					type: 'success'
-	 				}, function () {
-	 					$("#add-operator-modal").modal('hide');
-	 					$('#add-operator-form')[0].reset();
-	 				});
-	 			}
-	 		});
+	 		if (category === 'select') {
+	 			addAgencyValidator.showErrors({
+	 				category: 'Please select the correct agency category!'
+	 			});
+
+	 			return false;
+	 		} else {
+	 			Meteor.call('addAgency', name, email, category, contact, address, function (error, result) {
+	 				if (error) {
+	 					swal('Add Agency', error.reason, 'error');
+	 				} else {
+	 					swal({
+		 					title: 'Add Agency',
+		 					text: 'The new agency has successfully been added!',
+		 					type: 'success'
+		 				}, function () {
+		 					$("#add-agency-modal").modal('hide');
+		 					$('#add-agency-form')[0].reset();
+		 				});
+	 				}
+	 			});
+	 		}
 	 	},
 	 	rules: {
 	 		name: {
@@ -33,6 +42,9 @@ Template.callCenterOperatorList.onRendered(function () {
 	 			minlength: 3,
 	 			maxlength: 50,
 	 			required: true
+	 		},
+	 		category: {
+	 			categoryCheck: true
 	 		},
 	 		contact: {
 	 			minlength: 8,
@@ -89,36 +101,33 @@ Template.callCenterOperatorList.onRendered(function () {
 	 });
 });
 
-Template.callCenterOperatorList.helpers({
-	isEmptyOperatorList: function () {
-		return Meteor.users.find({
-			'profile.type': 'call-center-operator'
-		}).count() === 0;
+// jQuery validator add-on methods
+jQuery.validator.addMethod("categoryCheck", function(value, element) {
+    return this.optional(element) || /[^{select}]/.test(value);
+}, "Please select the correct agency category!");
+
+Template.agencyList.helpers({
+	isEmptyAgencyList: function () {
+		return Agencies.find().count() === 0;
 	},
-	operatorList: function () {
-		return 	Meteor.users.find({
-					'profile.type': 'call-center-operator'
-				}, {
-					sort: {
-						profile: 1
-					}
-				});	
+	agencyList: function () {
+		return 	Agencies.find();
 	},
 });
 
-Template.callCenterOperatorItem.events({
-	'click #edit-operator-button': function () {
-		Router.go('editOperator', {
+Template.agencyItem.events({
+	'click #edit-agency-button': function () {
+		Router.go('editAgency', {
 			_id: this._id
 		});
 	},
 
-	'click #delete-operator-button': function () {
-		Meteor.call('deleteCallCenterOperator', this._id, function (error, result) {
+	'click #delete-agency-button': function () {
+		Meteor.call('deleteAgency', this._id, function (error, result) {
 			if (error) {
-				swal('Delete Call Center Operator', error.reason, 'error');
+				swal('Delete Agency', error.reason, 'error');
 			} else {
-				swal('Delete Call Center Operator', 'The call center operator account has been successfully removed from the database!', 'success');
+				swal('Delete Agency', 'The agency has been successfully removed from the database!', 'success');
 			}
 		});
 	}
