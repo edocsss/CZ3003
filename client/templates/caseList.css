@@ -1,0 +1,29 @@
+#case-container {
+    padding-left: 70px;
+    padding-right: 70px;
+}
+
+#add-case-row {
+    margin-bottom: 1.5em;
+}
+
+#add-case-button {
+    width: 13em;
+}
+
+#case-table {
+    font-size: 14px;
+}
+
+#case-table th {
+    font-size: 16px;
+    text-align: center;
+}
+
+#case-table td {
+    vertical-align: middle;
+}
+
+.modal-header {
+    padding-bottom: 0;
+}
