@@ -3,15 +3,15 @@ Meteor.startup(function () {
 });
 
 var contentString;
-
 var infowindow;
-
 var marker; 
+
+Template.map.onRendered(function () {
+
+});
 
 Template.map.onCreated(function () {
 	GoogleMaps.ready('map', function (map) {
-		console.log("MAP READY!");
-
 		google.maps.event.addListener(map.instance, 'click', function(event) {
 			placeMarker(event.latLng);
 		});
@@ -52,8 +52,8 @@ Template.map.onCreated(function () {
 						'<div class="form-group">'+
 							'<div class="col-sm-12">'+
 				    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
-								 	'<option value="opt1">Fire</option>'+
-								  	'<option value="opt2">Bigger Fire</option>'+
+								 	'<option value="Fire">Fire</option>'+
+								  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
 								'</select>'+
 							'</div>'+
 						'</div>'+
@@ -75,11 +75,11 @@ Template.map.onCreated(function () {
 						'</div>'+
 						
 						'<div class="form-group">'+
-							'<div class="col-sm-5">'+
-								'<input type="reset"  class="btn btn-primary left-block" value="Reset">'+ 
+							'<div class="col-sm-6">'+
+								'<button type="reset"  class="btn btn-primary" value="Reset">'+ 
 							'</div>'+
 							'<div class="col-sm-6">'+ 
-								'<input type="submit" class="btn btn-primary left-block" value="Submit">' +
+								'<button type="submit" class="btn btn-primary create-case-submit" value="Submit">' +
 							'</div>'+
 						'</div>'+
 						
@@ -92,107 +92,101 @@ Template.map.onCreated(function () {
 
 			marker.addListener('click', function() {
 				infowindow.open(GoogleMaps.maps.map.instance, marker);
+
+				// THIS VALIDATOR MUST BE INSIDE THIS LISTENER
+				// If not, the validator is not instantiated correctly because the form has not been rendered yet
+				var createCaseValidator = $('#create-case-form').validate({
+					submitHandler: function (form, event) {
+						event.preventDefault();
+						
+						var title 		= $('#create-case-title').val();
+						var type 		= $('#create-case-type').val();
+						var address 	= $('#create-case-address').val();
+						var description = $('#create-case-description').val();
+
+						/*
+						Meteor.createCaseWithPassword(email, password, function (error) {
+							if (error) {
+								if (error.reason == "User not found") {
+									createCaseValidator.showErrors({
+										email: error.reason
+									});
+								}
+
+								if (error.reason == "Incorrect password") {
+									createCaseValidator.showErrors({
+										password: error.reason
+									});
+								}
+
+								if (error.reason != "User not found" & error.reason != "Incorrect password") {
+									swal('createCase', error.reason, 'error');
+								}
+							}
+						});*/
+					},
+					rules: {
+						title: {
+							minlength: 3,
+							maxlength: 20,
+							required: true
+						},
+						type: {
+							required: true
+						},
+						address: {
+							minlength: 3,
+							maxlength: 40,
+							required: true
+						},
+						description: {
+							minlength: 3,
+							maxlength: 200,
+							required: true
+						}
+					},
+
+					messages: {
+						title: {
+							minlength: "The case title must be between 3 to 20 characters!",
+							maxlength: "The case title must be between 3 to 20 characters!",
+							required: "You must enter a case title!"
+						},
+						type: {
+							required: "You must select a case type!"
+						}, 
+						address: {
+							minlength: "The address must be between 3 to 40 characters!",
+							maxlength: "The address must be between 3 to 40 characters!",
+							required: "You must enter an address!"
+						}, 
+						description: {
+							minlength: "The description must be between 3 to 200 characters!",
+							maxlength: "The description must be between 3 to 200 characters!",
+							required: "You must enter a description!"
+						}
+					},
+					highlight: function (element) {
+						$(element).closest('.form-group').addClass('has-error');
+						$(element).closest('.form-group').removeClass('has-success');
+					},
+					unhighlight: function (element) {
+						$(element).closest('.form-group').addClass('has-success');
+						$(element).closest('.form-group').removeClass('has-error');
+					},
+					errorElement: 'span',
+					errorClass: 'help-block',
+					errorPlacement: function (error, element) {
+						if (element.parent('.input-group').length) {
+							error.insertAfter(element.parent());
+						} else {
+							error.insertAfter(element);
+						}
+					}
+				});
 			});
 		}
 	}
-});
-
-Template.map.onRendered(function () {
-
-
-			var createCaseValidator = $('#create-case-form').validate({
-				submitHandler: function (form, event) {
-
-					console.log ("lolbefore");
-					event.preventDefault();
-					console.log ("lol");
-
-					var title 		= $('#create-case-title').val();
-					var type 		= $('#create-case-type').val();
-					var address 	= $('#create-case-address').val();
-					var description = $('#create-case-description').val();
-
-					return false;
-					/*
-					Meteor.createCaseWithPassword(email, password, function (error) {
-						if (error) {
-							if (error.reason == "User not found") {
-								createCaseValidator.showErrors({
-									email: error.reason
-								});
-							}
-
-							if (error.reason == "Incorrect password") {
-								createCaseValidator.showErrors({
-									password: error.reason
-								});
-							}
-
-							if (error.reason != "User not found" & error.reason != "Incorrect password") {
-								swal('createCase', error.reason, 'error');
-							}
-						}
-					});*/
-				},
-				rules: {
-					title: {
-						minlength: 3,
-						maxlength: 20,
-						required: true
-					},
-					type: {
-						required: true
-					},
-					address: {
-						minlength: 3,
-						maxlength: 40,
-						required: true
-					},
-					description: {
-						minlength: 3,
-						maxlength: 200,
-						required: true
-					}
-				},
-
-				messages: {
-					title: {
-						minlength: "The case title must be between 3 to 20 characters!",
-						maxlength: "The case title must be between 3 to 20 characters!",
-						required: "You must enter a case title!"
-					},
-					type: {
-						required: "You must select a case type!"
-					}, 
-					address: {
-						minlength: "The address must be between 3 to 40 characters!",
-						maxlength: "The address must be between 3 to 40 characters!",
-						required: "You must enter an address!"
-					}, 
-					description: {
-						minlength: "The description must be between 3 to 200 characters!",
-						maxlength: "The description must be between 3 to 200 characters!",
-						required: "You must enter a description!"
-					}
-				},
-				highlight: function (element) {
-					$(element).closest('.form-group').addClass('has-error');
-					$(element).closest('.form-group').removeClass('has-success');
-				},
-				unhighlight: function (element) {
-					$(element).closest('.form-group').addClass('has-success');
-					$(element).closest('.form-group').removeClass('has-error');
-				},
-				errorElement: 'span',
-				errorClass: 'help-block',
-				errorPlacement: function (error, element) {
-					if (element.parent('.input-group').length) {
-						error.insertAfter(element.parent());
-					} else {
-						error.insertAfter(element);
-					}
-				}
-			});
 });
 
 Template.map.helpers({
@@ -210,25 +204,8 @@ Template.map.helpers({
 
 
 Template.map.events({
-	"submit .new-task": function (event) {
-		// Prevent default browser form submit 
-		event.preventDefault();
-
-
-		// Get value from form element
-		//TODO: Input check, make sure all is filled
-		var title 		= event.target.title.value;
-		var type 		= event.target.type.value;
-		var address 	= event.target.address.value;
-		var description = event.target.description.value;
-
-		var latlong; //TODO: take from marker
-		var datetime; //TODO: take from current datetime
-
-		//TODO: send the data somewhere 
-
-		// Clear form
-		event.target.reset();
+	'click .create-case-submit': function () {
+		console.log('click');
 	}
 });
 
