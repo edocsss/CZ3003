@@ -3,11 +3,13 @@
 	max-width: 100%;
 	height: 100%;
 }
-
-.iwContent{
-	width:700px; 
+ 
+button {
+	width: 100%;
 }
 
-select {
-    width:180px;
+
+.formwidth {
+    width:230px;
 } 
+ 
