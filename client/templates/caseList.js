@@ -20,6 +20,29 @@ Template.caseList.events({
             _id: this._id
         });
     },
+    'change .filter-case': function () {
+        var category = $('#filter-case-category').val();
+        var severity = $('#filter-case-severity').val();
+        var status = $('#filter-case-status').val();
+        $("#case-table > tbody > tr").each(function () {
+            var children = $(this).children();
+            var fail = false;
+            if (category !== "" && children[1].textContent !== category) {
+                fail = true;
+            }
+            if (severity !== "" && children[3].textContent !== severity) {
+                fail = true;
+            }
+            if (status !== "" && children[4].textContent !== status) {
+                fail = true;
+            }
+            if (fail) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    },
 
     'click #delete-case-button': function () {
         swal({
