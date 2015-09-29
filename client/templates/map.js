@@ -76,10 +76,10 @@ Template.map.onCreated(function () {
 						
 						'<div class="form-group">'+
 							'<div class="col-sm-6">'+
-								'<button type="reset"  class="btn btn-primary" value="Reset">'+ 
+								'<button type="reset"  class="btn btn-primary">Reset</button>'+ 
 							'</div>'+
 							'<div class="col-sm-6">'+ 
-								'<button type="submit" class="btn btn-primary create-case-submit" value="Submit">' +
+								'<button type="submit" class="btn btn-primary create-case-submit">Submit</button>' +
 							'</div>'+
 						'</div>'+
 						
@@ -206,6 +206,24 @@ Template.map.helpers({
 Template.map.events({
 	'click .create-case-submit': function () {
 		console.log('click');
+		// from Kenrick, just to add some data to db, plz modify accordingly. Thank you :)
+ 		var title = $('#create-case-title').val();
+ 		var category = $('#create-case-category').val();
+ 		var description = $('#create-case-description').val();
+ 		var address = $('#create-case-address').val();
+ 		var coordinate = marker.position;
+ 		var severity = $('#create-case-severity').val();
+		Meteor.call('addCase', title, category, description, address, coordinate, severity, function (error, result) {
+ 			if (error) {
+ 				swal('Oops!', error.reason, 'error');
+ 			} else {
+ 				swal({
+ 					title: 'Thank you!',
+ 					text: 'The new case has been reported!',
+ 					type: 'success'
+ 				});
+ 			}
+ 		});
 	}
 });
 

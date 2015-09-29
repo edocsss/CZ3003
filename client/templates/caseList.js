@@ -7,34 +7,14 @@ Template.caseList.onRendered(function () {
 
 Template.caseList.helpers({
     isEmptyCaseList: function () {
-        return true;
-        return Meteor.cases.find({
-            'type': 'accepted'
-        }).count() === 0;
+        return Cases.find({}).count() === 0;
     },
     caseList: function () {
-        return [];
-        return  Meteor.cases.find({
-            'type': 'accepted'
-        }); 
+        return Cases.find({}); 
     },
 });
 
 Template.caseList.events({
-    'click #approve-case-button': function () {
-        Meteor.call('approveCase', this._id, function (error, result) {
-            if (error) {
-                swal('Approval error', error.reason, 'error');
-            }
-        });
-    },
-    'click #decline-case-button': function () {
-        Meteor.call('declineCase', this._id, function (error, result) {
-            if (error) {
-                swal('Decline error', error.reason, 'error');
-            }
-        });
-    },
     'click #edit-case-button': function () {
         Router.go('editCase', {
             _id: this._id
@@ -42,12 +22,26 @@ Template.caseList.events({
     },
 
     'click #delete-case-button': function () {
-        Meteor.call('deleteCase', this._id, function (error, result) {
-            if (error) {
-                swal('Delete Case', error.reason, 'error');
-            } else {
-                swal('Delete Case', 'The case has been deleted.', 'success');
-            }
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this case!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            closeOnConfirm: false,
+            confirmButtonColor: "#E51C23",
+            html: false
+        }, () => {
+            Meteor.call('deleteCase', this._id, function (error, result) {
+                console.log(error);
+                if (error) {
+                    swal('Delete Case', error.reason, 'error');
+                } else {
+                    swal('Delete Case', 'The case has been deleted.', 'success');
+                }
+            });
         });
+
+        
     }
 });

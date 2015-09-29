@@ -55,6 +55,28 @@ Router.route('cases', {
 	}
 });
 
+
+Router.route('editCase', {
+	path: '/edit-case/:_id',
+	template: 'editCase',
+	data: function () {
+		return Cases.findOne({_id: this.params._id});
+	},
+	onBeforeAction: function () {
+		var userId = Meteor.userId();
+		if (userId) {
+			var user = Meteor.users.findOne(userId);
+			if (user.profile.type === 'admin') {
+				this.next();
+			} else {
+				this.redirect('home');
+			}
+		} else {
+			this.redirect('home');
+		}
+	}
+});
+
 Router.route('agencies', {
 	path: '/agencies',
 	template: 'agencyList',

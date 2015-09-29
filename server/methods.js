@@ -214,5 +214,60 @@ Meteor.methods({
 		}
 
 		Meteor.users.remove(userId);
+	},
+
+	addCase: function (title, category, description, address, coordinate, severity) {
+		// todo: limit length of address
+
+		var currentUser = Meteor.user();
+		var status = "Pending";
+		// var createdBy = null;
+		if (!!currentUser) {
+			// createdBy = currentUser.emails[0].address;
+			if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) {
+				status = "Approved";
+			}
+		}
+
+		Cases.insert({
+			title: title,
+			category: category,
+			description: description,
+			address: address,
+			coordinate: coordinate,
+			severity: severity,
+			status: status,
+			// createdBy: createdBy,
+			createdOn: new Date()
+		});
+	},
+
+	editCase: function (caseId, title, category, description, address, coordinate, severity, status) {
+		var currentUser = Meteor.user();
+		if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) === -1) {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
+
+		Cases.update(caseId, {
+			$set: {
+				title: title,
+				category: category,
+				description: description,
+				address: address,
+				coordinate: coordinate,
+				severity: severity,
+				status: status
+			}
+		});
+	},
+
+	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	deleteCase: function (caseId) {
+		var currentUser = Meteor.user();
+		if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) === -1) {
+			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		}
+
+		Cases.remove(caseId);
 	}
 });

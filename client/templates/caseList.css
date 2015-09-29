@@ -7,10 +7,6 @@
     margin-bottom: 1.5em;
 }
 
-#add-case-button {
-    width: 13em;
-}
-
 #case-table {
     font-size: 14px;
 }
@@ -24,6 +20,9 @@
     vertical-align: middle;
 }
 
-.modal-header {
-    padding-bottom: 0;
+button.cancel {
+    width: 123.033px;
+    color: #666;
+    background-color: #fff !important;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4) !important;
 }
