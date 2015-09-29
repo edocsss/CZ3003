@@ -31,7 +31,7 @@ Template.caseList.events({
             closeOnConfirm: false,
             confirmButtonColor: "#E51C23",
             html: false
-        }, () => {
+        }, function() {
             Meteor.call('deleteCase', this._id, function (error, result) {
                 console.log(error);
                 if (error) {
@@ -40,7 +40,7 @@ Template.caseList.events({
                     swal('Delete Case', 'The case has been deleted.', 'success');
                 }
             });
-        });
+        }.bind(this));
 
         
     }
