@@ -12,7 +12,7 @@
                     <label for="category" class="col-sm-2 control-label">Category:</label>
                     <div class="col-sm-10">
                     <select class="form-control filter-case" name="category" id ="filter-case-category"> 
-                        <option value=""></option>
+                        <option value="All">All</option>
                         <option value="Fire">Fire</option>
                         <option value="Traffic Accidents">Traffic Accidents</option>
                     </select>
@@ -22,7 +22,7 @@
                     <label for="severity" class="col-sm-2 control-label">Severity:</label>
                     <div class="col-sm-10">
                     <select class="form-control filter-case" name="severity" id ="filter-case-severity">
-                        <option value=""></option>
+                        <option value="All">All</option>
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
@@ -34,7 +34,7 @@
                     <label for="status" class="col-sm-2 control-label">Status:</label>
                     <div class="col-sm-10">
                     <select class="form-control filter-case" name="status" id ="filter-case-status"> 
-                        <option value=""></option>
+                        <option value="All">All</option>
                         <option value="Pending">Pending</option>
                         <option value="Approved">Approved</option>
                         <option value="Rejected">Rejected</option>
@@ -55,7 +55,7 @@
                             <th>Severity</th>
                             <!-- <th>Created on</th> -->
                             <th>Status</th>
-                            <th class="col-xs-3">&nbsp;</th>
+                            <th class="col-xs-3">Action</th>
                         </tr>
                     </thead>
                     
@@ -67,7 +67,7 @@
                         {{else}}
                             <tr>
                                 <td colspan="6" class="text-center">
-                                    <i>There is no case reported yet.</i>
+                                    <i>There is no case reported yet!</i>
                                 </td>
                             </tr>
                         {{/unless}}
@@ -91,13 +91,13 @@
             <div class="col-xs-6">
                 <button type="button" class="btn btn-primary" id="edit-case-button">
                     <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                    Edit
+                    &nbsp;&nbsp;Edit
                 </button>
             </div>
             <div class="col-xs-6">
                 <button type="button" class="btn btn-danger" id="delete-case-button">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    Delete
+                    &nbsp;&nbsp;Delete
                 </button>
             </div>
         </td>

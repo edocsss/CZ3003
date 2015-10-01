@@ -29,6 +29,44 @@ Meteor.startup(function () {
 		});
 	}
 
+	if (Cases.find().count() === 0) {
+		Cases.insert({
+			title: 'Case 1',
+			category: 'Traffic Accidents',
+			description: 'description',
+			address: 'address',
+			coordinate: 'asd',
+			severity: 'High',
+			status: 'Approved',
+			createdBy: 'system',
+			createdOn: new Date()
+		});
+
+		Cases.insert({
+			title: 'Case 2',
+			category: 'Fire',
+			description: 'description',
+			address: 'address',
+			coordinate: 'asd',
+			severity: 'Medium',
+			status: 'Pending',
+			createdBy: 'system',
+			createdOn: new Date()
+		});
+
+		Cases.insert({
+			title: 'Case 3',
+			category: 'Traffic Accidents',
+			description: 'description',
+			address: 'address',
+			coordinate: 'asd',
+			severity: 'Low',
+			status: 'Closed',
+			createdBy: 'system',
+			createdOn: new Date()
+		});
+	}
+
 	// Setting up Accounts EMAIL TEMPLATE
 	Accounts.emailTemplates.siteName = 'ID70 Crisis Management System';
 	Accounts.emailTemplates.from = "ID70 Crisis Management System <id70cms@cms.com>";

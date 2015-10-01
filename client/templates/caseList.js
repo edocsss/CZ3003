@@ -3,14 +3,43 @@ Template.caseList.onRendered(function () {
     // edit --> edit status
     // no need for quick status update (approve/decline?)
     // .... how to add record to case collections? --> wait for Aristo
+    Session.set('filterCategory', 'All');
+    Session.set('filterSeverity', 'All');
+    Session.set('filterStatus', 'All');
 });
 
 Template.caseList.helpers({
     isEmptyCaseList: function () {
-        return Cases.find({}).count() === 0;
+        var selector = {
+            category: Session.get('filterCategory'),
+            severity: Session.get('filterSeverity'),
+            status: Session.get('filterStatus')
+        };
+
+        // Remove unused selector
+        for (var x in selector) {
+            if (selector[x] === 'All') {
+                delete selector[x];
+            }
+        }
+
+        return Cases.find(selector).count() === 0;
     },
     caseList: function () {
-        return Cases.find({}); 
+        var selector = {
+            category: Session.get('filterCategory'),
+            severity: Session.get('filterSeverity'),
+            status: Session.get('filterStatus')
+        };
+
+        // Remove unused selector
+        for (var x in selector) {
+            if (selector[x] === 'All') {
+                delete selector[x];
+            }
+        }
+
+        return Cases.find(selector); 
     },
 });
 
@@ -24,24 +53,29 @@ Template.caseList.events({
         var category = $('#filter-case-category').val();
         var severity = $('#filter-case-severity').val();
         var status = $('#filter-case-status').val();
-        $("#case-table > tbody > tr").each(function () {
-            var children = $(this).children();
-            var fail = false;
-            if (category !== "" && children[1].textContent !== category) {
-                fail = true;
-            }
-            if (severity !== "" && children[3].textContent !== severity) {
-                fail = true;
-            }
-            if (status !== "" && children[4].textContent !== status) {
-                fail = true;
-            }
-            if (fail) {
-                $(this).hide();
-            } else {
-                $(this).show();
-            }
-        });
+
+        Session.set('filterCategory', category);
+        Session.set('filterSeverity', severity);
+        Session.set('filterStatus', status);
+
+        // $("#case-table > tbody > tr").each(function () {
+        //     var children = $(this).children();
+        //     var fail = false;
+        //     if (category !== "" && children[1].textContent !== category) {
+        //         fail = true;
+        //     }
+        //     if (severity !== "" && children[3].textContent !== severity) {
+        //         fail = true;
+        //     }
+        //     if (status !== "" && children[4].textContent !== status) {
+        //         fail = true;
+        //     }
+        //     if (fail) {
+        //         $(this).hide();
+        //     } else {
+        //         $(this).show();
+        //     }
+        // });
     },
 
     'click #delete-case-button': function () {
