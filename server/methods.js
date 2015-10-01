@@ -49,9 +49,6 @@ Meteor.methods({
 	},
 
 	broadcastEmail: function (subject, content) {
-		// Todo: encountered Match error ???
-
-
 		var base_url = Meteor.absoluteUrl() + "/unsubscribe/";
 		var html =  "Dear subscribers," +
 					"<br><br>" +
@@ -61,15 +58,18 @@ Meteor.methods({
 					"<br>" +
 					"Note: This is an auto generated notification. Please do not reply. <br>";
 		var footer = "";
+		var email = "";
+		Subscribers.find({}).forEach(function (subscriber) {
 
-		for (var subscriber in Subscribers.find({})) {
 			footer = "Too much e-mail from us? Click <a href='" + base_url + subscriber._id + "'>here</a> to unsubscribe<br>";
+			// console.log(subscriber);
+			email = subscriber.email;
 			Meteor.call('sendEmail',
-				subscriber.email,
+				email,
 				"ID70 Crisis Management System <id70cms@cms.com>",
 				subject,
 				html + footer);
-		}
+		});
 		
 	},
 
@@ -279,32 +279,28 @@ Meteor.methods({
 				status: status
 			}
 		});
+		var subject = null, content = null;
 
 		if (oldCase.status === "Pending" && status === "Approved") {
-			Meteor.call("broadcastEmail",
-				"🔔 " + category + " at " + address + ".",
-
-				"We have received a report of " + category + " with details: " +
+			subject = "🔔 " + category + " at " + address + ".";
+			content = "We have received a report of " + category + " with details: " +
 				"Address     : " + address + "<br>" +
 				"Description : " + description + "br>" +
 				"Severity        : " + severity + "<br>" +
 				"Date/time   : " + oldCase.createdOn + "<br>" +
-				"Please avoid travelling to that area until further notification is sent.<br>");
+				"Please avoid travelling to that area until further notification is sent.<br>";
 		} else if (status === "Closed") {
-			Meteor.call("broadcastEmail",
-				"[CASE CLOSED] " + category + " at " + address + ".",
-
-				"The " + category + " reported at " + address + " on " + oldCase.createdOn + " has been resolved.<br>");
+			subject = "[CASE CLOSED] " + category + " at " + address + ".";
+			content = "The " + category + " reported at " + address + " on " + oldCase.createdOn + " has been resolved.<br>";
 		} else {
-			Meteor.call("broadcastEmail",
-				"🔔 " + category + " at " + address + ".",
-
-				"The " + category + " reported at " + oldCase.address + " on " + oldCase.createdOn + " has been updated  " +
+			subject = "🔔 " + category + " at " + address + ".";
+			content = "The " + category + " reported at " + oldCase.address + " on " + oldCase.createdOn + " has been updated  " +
 				"Address     : " + address + "<br>" +
 				"Description : " + description + "br>" +
 				"Severity        : " + severity + "<br>" +
-				"Please avoid travelling to that area until further notification is sent.<br>");
+				"Please avoid travelling to that area until further notification is sent.<br>";
 		}
+		Meteor.call("broadcastEmail", subject, content);
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
