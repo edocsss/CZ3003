@@ -35,8 +35,6 @@ Meteor.methods({
 	},
 
 	sendEmail: function (to, from, subject, html) {
-		// http://stackoverflow.com/questions/17845932/using-dynamic-html-templates-in-meteor
-
 		check([to, from, subject, html], [String]);
 		this.unblock();
 
@@ -49,8 +47,7 @@ Meteor.methods({
 	},
 
 	broadcastEmail: function (caseObject) {
-		// Use Blaze.toHTML with the caseObject's data
-		// Then send it using Meteor.call('sendEmail') method
+		// Fetch subscribers 
 	},
 
 	// Expecting the created or updated case object (the whole object)
