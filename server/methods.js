@@ -46,8 +46,28 @@ Meteor.methods({
 		});
 	},
 
-	broadcastEmail: function (caseObject) {
-		// Fetch subscribers 
+	broadcastEmail: function (subject, content) {
+		// Todo: encountered Match error ???
+
+
+		var base_url = Meteor.absoluteUrl() + "/unsubscribe/";
+		var html =  "Dear subscribers," +
+					"<br><br>" +
+					content +
+					"Regards,<br>" +
+					"ID70 Crisis Management Team<br>" +
+					"<br>" +
+					"Note: This is an auto generated notification. Please do not reply. <br>";
+		var footer = "";
+
+		for (var subscriber in Subscribers.find({})) {
+			footer = "Too much e-mail from us? Click <a href='" + base_url + subscriber._id + "'>here</a> to unsubscribe<br>";
+			Meteor.call('sendEmail',
+				subscriber.email,
+				"ID70 Crisis Management System <id70cms@cms.com>",
+				subject,
+				html + footer);
+		}
 	},
 
 	// Expecting the created or updated case object (the whole object)
@@ -244,7 +264,7 @@ Meteor.methods({
 		if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) === -1) {
 			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
 		}
-
+		var oldCase = Cases.findOne(caseId);
 		Cases.update(caseId, {
 			$set: {
 				title: title,
@@ -256,6 +276,32 @@ Meteor.methods({
 				status: status
 			}
 		});
+
+		if (oldCase.status === "Pending" && status === "Approved") {
+			Meteor.call("broadcastEmail",
+				"🔔 " + category + " at " + address + ".",
+
+				"We have received a report of " + category + " with details: " +
+				"Address     : " + address + "<br>" +
+				"Description : " + description + "br>" +
+				"Severity        : " + severity + "<br>" +
+				"Date/time   : " + oldCase.createdOn + "<br>" +
+				"Please avoid travelling to that area until further notification is sent.<br>");
+		} else if (status === "Closed") {
+			Meteor.call("broadcastEmail",
+				"[CASE CLOSED] " + category + " at " + address + ".",
+
+				"The " + category + " reported at " + address + " on " + oldCase.createdOn + " has been resolved.<br>");
+		} else {
+			Meteor.call("broadcastEmail",
+				"🔔 " + category + " at " + address + ".",
+
+				"The " + category + " reported at " + oldCase.address + " on " + oldCase.createdOn + " has been updated  " +
+				"Address     : " + address + "<br>" +
+				"Description : " + description + "br>" +
+				"Severity        : " + severity + "<br>" +
+				"Please avoid travelling to that area until further notification is sent.<br>");
+		}
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
