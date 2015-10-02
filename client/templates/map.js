@@ -142,7 +142,10 @@ Template.map.onCreated(function () {
 			'</div>';
 		});*/
 
-		var query = Cases.find({});
+		var query = Cases.find({
+			status: 'Approved'
+		});
+
 		query.observe({  
 			added: function(caseInp) {
 			// Create a marker for this data 
