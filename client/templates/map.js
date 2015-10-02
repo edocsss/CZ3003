@@ -3,12 +3,16 @@ Meteor.startup(function () {
 });
 
 var contentString;
+var contentStringTop;
+var contentStringMid;
+var contentStringBot;
+
 var infowindow;
-var marker; 
-
-Template.map.onRendered(function () {
-
-});
+var newMarker; 
+var markerList = [];
+var markerCnt = 0;
+var casesList = {};   
+var currentUser;
 
 Template.map.onCreated(function () {
 	GoogleMaps.ready('map', function (map) {
@@ -16,82 +20,75 @@ Template.map.onCreated(function () {
 			placeMarker(event.latLng);
 		});
 
-	});
+		casesList = Cases.find({}); 
+		markerCnt = 0;
+		//console.log(casesList);
+		casesList.forEach(function(caseinp){
+			//console.log(caseinp);
+			console.log(caseinp.coordinate);
+			var col = "";
+			if (caseinp.severity == "High") col = "red";
+			else if (caseinp.severity == "Medium") col = "orange";
+			else col = "yellow";
+			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
+				           new google.maps.Size(22, 40),
+				           new google.maps.Point(0,0),
+				           new google.maps.Point(11, 40));
+				
+			markerList[markerCnt++] = new google.maps.Marker({
+				draggable: false, 
+				position: {lat:caseinp.coordinate.H, lng:caseinp.coordinate.L}, //new google.maps.LatLng(caseinp.coordinate),// 
+				map: GoogleMaps.maps.map.instance,
+				icon: pinImage, 
+				title: "Submit a new case" 
+			});
 
+		});
+
+	});
+	
+	
 
 
 	function placeMarker(location) {
-		if ( marker ) {
-			marker.setPosition(location);
+		if ( newMarker ) {
+			newMarker.setPosition(location);
 			infowindow.close();
 
 		} else {
-			marker = new google.maps.Marker({
+ 
+		    var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_green+.png",
+		        new google.maps.Size(22, 40),
+		        new google.maps.Point(0,0),
+		        new google.maps.Point(11, 40));
+			
+			newMarker = new google.maps.Marker({
 				draggable: true,
 				animation: google.maps.Animation.DROP,
 				position: location,
 				map: GoogleMaps.maps.map.instance,
+				icon: pinImage, 
 				title: "Submit a new case"
+
 			});
 
-			contentString =  
-				'<h5 id="firstHeading" class="text-center">Create New Case</h5>'+
-
-				'<div class="container-fluid">'+
-					'<form class="form-horizontal center-block" id ="create-case-form">' +
-					
-						'<div class="form-group">'+
-							'<div class="col-sm-12">'+
-								'<input type="text" class="form-control" name="title" placeholder="Title" id ="create-case-title">'+
-							'</div>'+
-						'</div>'+
-
-
-						'Case Type:' +
-
-						'<div class="form-group">'+
-							'<div class="col-sm-12">'+
-				    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
-								 	'<option value="Fire">Fire</option>'+
-								  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
-								'</select>'+
-							'</div>'+
-						'</div>'+
-						
-						'Address:' +
-
-						'<div class="form-group">'+
-							'<div class="col-sm-12">'+
-								'<input type="text" class="form-control" name="address" placeholder="Address" id ="create-case-address"/>'+
-							'</div>'+
-						'</div>'+
-						
-						'Description:' +
-
-						'<div class="form-group">'+
-							'<div class="col-sm-12">'+
-								'<textarea class="form-control formwidth" name="description" id ="create-case-description"></textarea>' +
-							'</div>'+
-						'</div>'+
-						
-						'<div class="form-group">'+
-							'<div class="col-sm-6">'+
-								'<button type="reset"  class="btn btn-primary">Reset</button>'+ 
-							'</div>'+
-							'<div class="col-sm-6">'+ 
-								'<button type="submit" class="btn btn-primary create-case-submit">Submit</button>' +
-							'</div>'+
-						'</div>'+
-						
-					'</form>'+
-				'</div>' ;
+			var tmpContent;
+			tmpContent = contentStringTop; 
+			currentUser = Meteor.user();
+			if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1){
+				tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	
+				console.log("IsAdmin");
+				console.log(contentStringMid);
+			}  
+			console.log(currentUser);
+			tmpContent = tmpContent + contentStringBot;
 
 			infowindow = new google.maps.InfoWindow({ 
-				content: contentString
+				content: tmpContent
 			});
 
-			marker.addListener('click', function() {
-				infowindow.open(GoogleMaps.maps.map.instance, marker);
+			newMarker.addListener('click', function() {
+				infowindow.open(GoogleMaps.maps.map.instance, newMarker);
 
 				// THIS VALIDATOR MUST BE INSIDE THIS LISTENER
 				// If not, the validator is not instantiated correctly because the form has not been rendered yet
@@ -99,36 +96,41 @@ Template.map.onCreated(function () {
 					submitHandler: function (form, event) {
 						event.preventDefault();
 						
+						console.log("Okay");
 						var title 		= $('#create-case-title').val();
 						var type 		= $('#create-case-type').val();
 						var address 	= $('#create-case-address').val();
 						var description = $('#create-case-description').val();
+						var coordinate  = newMarker.getPosition();
+						var severity;
 
-						/*
-						Meteor.createCaseWithPassword(email, password, function (error) {
+						if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) {
+							severity    = $('#create-case-severity').val();
+						} else {
+							severity    = "NULL";
+						}
+							
+						console.log(title + type + address + description + coordinate + severity);
+						
+						Meteor.call('addCase', title, type, description, address, coordinate, severity ,function (error, result) {
 							if (error) {
-								if (error.reason == "User not found") {
-									createCaseValidator.showErrors({
-										email: error.reason
-									});
-								}
-
-								if (error.reason == "Incorrect password") {
-									createCaseValidator.showErrors({
-										password: error.reason
-									});
-								}
-
-								if (error.reason != "User not found" & error.reason != "Incorrect password") {
-									swal('createCase', error.reason, 'error');
-								}
+								swal('Oops!', error.reason, 'error');
+							} else {
+								swal({
+									title: 'Thank you!',
+									text: 'The new case has been reported!',
+									type: 'success'
+								});
+								form.reset();
+								infowindow.close();
+								console.log("It Okay");
 							}
-						});*/
+						});
 					},
 					rules: {
 						title: {
 							minlength: 3,
-							maxlength: 20,
+							maxlength: 30,
 							required: true
 						},
 						type: {
@@ -136,34 +138,39 @@ Template.map.onCreated(function () {
 						},
 						address: {
 							minlength: 3,
-							maxlength: 40,
+							maxlength: 50,
 							required: true
 						},
 						description: {
 							minlength: 3,
-							maxlength: 200,
+							maxlength: 300,
+							required: true
+						},
+						severity: {
 							required: true
 						}
 					},
 
 					messages: {
 						title: {
-							minlength: "The case title must be between 3 to 20 characters!",
-							maxlength: "The case title must be between 3 to 20 characters!",
+							minlength: "Title must be between 3 to 30 characters long!",
+							maxlength: "Title must be between 3 to 30 characters long!",
 							required: "You must enter a case title!"
 						},
 						type: {
 							required: "You must select a case type!"
 						}, 
 						address: {
-							minlength: "The address must be between 3 to 40 characters!",
-							maxlength: "The address must be between 3 to 40 characters!",
+							minlength: "Address must be between 3 to 50 characters long!",
+							maxlength: "Address must be between 3 to 50 characters long!",
 							required: "You must enter an address!"
 						}, 
-						description: {
-							minlength: "The description must be between 3 to 200 characters!",
-							maxlength: "The description must be between 3 to 200 characters!",
+						description: { 
+							maxlength: "Description cannot exceed 300 characters!",
 							required: "You must enter a description!"
+						},
+						severity: {
+							required: "You must select a severity level!"
 						}
 					},
 					highlight: function (element) {
@@ -202,8 +209,118 @@ Template.map.helpers({
 });
 
 
+Template.map.onRendered(function () {
 
-Template.map.events({
+	contentString =   
+		'<div class="container windowbox" >'+
+			'<h5 id="firstHeading" class="text-center">Create New Case</h5>'+
+
+			'<form class="form-horizontal center-block" id ="create-case-form">' +
+			 
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+						'<input type="text" class="form-control formwidth" name="title" placeholder="Title" id ="create-case-title">'+
+					'</div>'+
+				'</div>'+
+
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+						'<input type="text" class="form-control formwidth" name="address" placeholder="Address" id ="create-case-address"/>'+
+					'</div>'+
+				'</div>'+
+
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+		    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
+		    				'<option selected disabled hidden value="">Case Type</option>' +
+						 	'<option value="Fire">Fire</option>'+
+						  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
+						'</select>'+
+					'</div>'+
+				'</div>'+
+				  
+				'Description:' + 
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+						'<textarea class="form-control formwidth" name="description" id ="create-case-description"></textarea>' +
+					'</div>'+
+				'</div>'+
+				
+				'<div class="form-group formwidth">'+
+					'<div class="col-sm-6">'+
+						'<button type="reset"  class="btn btn-primary">Reset</button>'+ 
+					'</div>'+
+					'<div class="col-sm-6">'+ 
+						'<button type="submit" class="btn btn-primary create-case-submit">Submit</button>' +
+					'</div>'+
+				'</div>'+
+				
+			'</form>'+
+		'</div>' ;
+
+	contentStringTop =  
+		'<div class="container windowbox" >'+
+			'<h5 id="firstHeading" class="text-center">Create New Case</h5>'+
+
+			'<form class="form-horizontal center-block" id ="create-case-form">' +
+			 
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+						'<input type="text" class="form-control formwidth" name="title" placeholder="Title" id ="create-case-title">'+
+					'</div>'+
+				'</div>'+
+
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+						'<input type="text" class="form-control formwidth" name="address" placeholder="Address" id ="create-case-address"/>'+
+					'</div>'+
+				'</div>'+
+
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+		    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
+		    				'<option selected disabled hidden value="">Case Type</option>' +
+						 	'<option value="Fire">Fire</option>'+
+						  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
+						'</select>'+
+					'</div>'+
+				'</div>';
+		
+	contentStringMid = 
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+		    			'<select class="form-control formwidth" name="severity" width="200" id ="create-case-severity">' +
+		    				'<option selected disabled hidden value="">Severity Level</option>' +
+						 	'<option value="Low">Low</option>'+
+						  	'<option value="Medium">Medium</option>'+
+						  	'<option value="High">High</option>'+ 
+						'</select>'+
+					'</div>'+
+				'</div>';
+				
+	contentStringBot =
+				'Description:' + 
+				'<div class="form-group">'+
+					'<div class="col-sm-12">'+
+						'<textarea class="form-control formwidth" name="description" id ="create-case-description"></textarea>' +
+					'</div>'+
+				'</div>' +
+				'<div class="form-group formwidth">'+
+					'<div class="col-sm-6">'+
+						'<button type="reset"  class="btn btn-primary">Reset</button>'+ 
+					'</div>'+
+					'<div class="col-sm-6">'+ 
+						'<button type="submit" class="btn btn-primary create-case-submit">Submit</button>' +
+					'</div>'+
+				'</div>'+
+				
+			'</form>'+
+		'</div>' ;
+
+});
+
+
+/*Template.map.events({
 	'click .create-case-submit': function () {
 		console.log('click');
 		// from Kenrick, just to add some data to db, plz modify accordingly. Thank you :)
@@ -225,7 +342,7 @@ Template.map.events({
  			}
  		});
 	}
-});
+});*/
 
 
 /*
@@ -233,12 +350,12 @@ Template.map.events({
 	TODO
 
 	Benerin form --> ikutin Bootstrap classes (see resetPasswordForm for example) V
-	Form checking --> use jQuery validator (see other JS files loginForm.js)
-	create insert method @ methods.js
-	Marker --> different color and undragable for existing cases
+	Form checking --> use jQuery validator (see other JS files loginForm.js) vv
+	create insert method @ methods.js v
+	Marker --> different color and undragable for existing cases 
 	Load existing cases marker initially
 	Observe realtime cases (see below)
-	Kalau ada user lgsg approve, else pending + severity NULL
+	Kalau ada user lgsg approve, else pending + severity NULL v
 
 */
 /*	reference

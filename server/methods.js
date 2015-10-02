@@ -253,7 +253,7 @@ Meteor.methods({
 				Meteor.call("broadcastEmail", subject, content);
 			}
 		}
-
+ 
 		Cases.insert({
 			title: title,
 			category: category,
