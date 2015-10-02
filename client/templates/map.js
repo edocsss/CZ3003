@@ -20,130 +20,9 @@ Template.map.onCreated(function () {
 	GoogleMaps.ready('map', function (map) {
 		google.maps.event.addListener(map.instance, 'click', function(event) {
 			placeMarker(event.latLng);
-		});
-/*
-		casesList = Cases.find({}); 
-		markerCnt = 0;
-		//console.log(casesList);
-		casesList.forEach(function(caseinp){
-			//console.log(caseinp);
-			//console.log(caseinp.coordinate);
-			console.log("Init: "+caseinp._id);
-			var col = "";
-			if (caseinp.severity == "High") col = "red";
-			else if (caseinp.severity == "Medium") col = "orange";
-			else col = "yellow";
-			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
-				           new google.maps.Size(22, 40),
-				           new google.maps.Point(0,0),
-				           new google.maps.Point(11, 40));
-				
-			markerList[caseinp._id] = new google.maps.Marker({
-				draggable: false, 
-				position: {lat:caseinp.coordinate.H, lng:caseinp.coordinate.L}, //new google.maps.LatLng(caseinp.coordinate),// 
-				map: GoogleMaps.maps.map.instance,
-				icon: pinImage, 
-				title: caseinp.title
-			});
+		}); 
 
-			var tmpcont = 
-			'<div class="container-fluid">'+
-				'<h5 id="firstHeading" class="text-center">'+ caseinp.title + '</h5>'+
-				'<b>Location:</b> ' + caseinp.address + '<br>' +
-				'<b>Type:</b> ' + caseinp.category + '<br>' +
-				'<b>Severity:</b> ' + caseinp.severity + '<br>' +
-				'<b>Description:</b> ' + caseinp.description + '<br>' +
-			'</div>';
-
-			markerList[caseinp._id].info = new google.maps.InfoWindow({ 
-				content: tmpcont
-			});
-
-			//console.log(markerList[markerCnt]); 
-
-			markerList[caseinp._id].addListener('click', function() {
-				if (prev_infowindow){	
-					prev_infowindow.close();
-				}
-				this.info.open(GoogleMaps.maps.map.instance, this); //has to call this, else reference is lost
-				prev_infowindow = this.info;
-			});
- 
-		});
-
-	});
-	
-	var query = Cases.find({});
-	Cases.find().observeChanges({  
-		added: function(id, caseInp) {
-		// Create a marker for this data 
-			var col = "";
-			if (caseInp.severity == "High") col = "red";
-			else if (caseInp.severity == "Medium") col = "orange";
-			else col = "yellow";
-			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
-				           new google.maps.Size(22, 40),
-				           new google.maps.Point(0,0),
-				           new google.maps.Point(11, 40));
-
-			markerList[id] = new google.maps.Marker({
-				draggable: false, 
-				position: {lat:caseInp.coordinate.H, lng:caseInp.coordinate.L}, 
-				map: GoogleMaps.maps.map.instance,
-				icon: pinImage, 
-				title: caseInp.title
-			});
-
-			var tmpcont = 
-			'<div class="container-fluid">'+
-				'<h5 id="firstHeading" class="text-center">'+ caseInp.title + '</h5>'+
-				'<b>Location:</b> ' + caseInp.address + '<br>' +
-				'<b>Type:</b> ' + caseInp.category + '<br>' +
-				'<b>Severity:</b> ' + caseInp.severity + '<br>' +
-				'<b>Description:</b> ' + caseInp.description + '<br>' +
-			'</div>';
-
-			markerList[id].info = new google.maps.InfoWindow({ 
-				content: tmpcont
-			});
-
-			//console.log(markerList[markerCnt]); 
-
-			markerList[id].addListener('click', function() {
-				if (prev_infowindow){	
-					prev_infowindow.close();
-				}
-				this.info.open(GoogleMaps.maps.map.instance, this); //has to call this, else reference is lost
-				prev_infowindow = this.info;
-			});
-
-		},
-		changed: function(id, caseInp) {
-			
-			var col = "";
-			if (caseInp.severity == "High") col = "red";
-			else if (caseInp.severity == "Medium") col = "orange";
-			else col = "yellow";
-			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
-				           new google.maps.Size(22, 40),
-				           new google.maps.Point(0,0),
-				           new google.maps.Point(11, 40));
-
-			markers[id].setPosition({lat: caseInp.coordinate.H, lng:caseInp.coordinate.L});
-			markers[id].setIcon(pinImage);
-
-			var tmpcont = 
-			'<div class="container-fluid">'+
-				'<h5 id="firstHeading" class="text-center">'+ caseInp.title + '</h5>'+
-				'<b>Location:</b> ' + caseInp.address + '<br>' +
-				'<b>Type:</b> ' + caseInp.category + '<br>' +
-				'<b>Severity:</b> ' + caseInp.severity + '<br>' +
-				'<b>Description:</b> ' + caseInp.description + '<br>' +
-			'</div>';
-		});*/
-
-		var query = Cases.find({});
-		query.observe({  
+		Cases.find({}).observe({  
 			added: function(caseInp) {
 			// Create a marker for this data 
 				var col = "";
@@ -380,13 +259,18 @@ Template.map.onCreated(function () {
 		});
 
 		//open by default
+		if (prev_infowindow){	
+			prev_infowindow.close();
+		}
 		infowindow.open(GoogleMaps.maps.map.instance, newMarker);	
-		
+		prev_infowindow = infowindow;
+
 		newMarker.addListener('click', function() {
 			if (prev_infowindow){	
 				prev_infowindow.close();
 			}
 			infowindow.open(GoogleMaps.maps.map.instance, newMarker);
+			prev_infowindow = infowindow;
 		});
 	}
 });
