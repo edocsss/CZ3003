@@ -182,7 +182,7 @@ Template.map.onCreated(function () {
 			
 			newMarker = new google.maps.Marker({
 				draggable: true,
-				animation: google.maps.Animation.DROP,
+				animation: google.maps.Animation.BOUNCE,
 				position: location,
 				map: GoogleMaps.maps.map.instance,
 				icon: pinImage, 
@@ -190,18 +190,15 @@ Template.map.onCreated(function () {
 
 			});
 
-			var tmpContent;
-			tmpContent = contentStringTop; 
 			currentUser = Meteor.user();
-			if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1){
-				tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	 
-			}   
+			var tmpContent = contentStringTop; 
+			if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	 
 			tmpContent = tmpContent + contentStringBot;
+			infowindow = new google.maps.InfoWindow({ content: tmpContent });
 
-			infowindow = new google.maps.InfoWindow({ 
-				content: tmpContent
-			});
-
+			//open by default
+			infowindow.open(GoogleMaps.maps.map.instance, newMarker);	
+			
 			newMarker.addListener('click', function() {
 				if (prev_infowindow){	
 					prev_infowindow.close();
