@@ -168,12 +168,9 @@ Template.map.onCreated(function () {
 
 
 	function placeMarker(location) {
-		if ( newMarker ) {
-			if (newMarker.map == null){ 
-				newMarker.setMap(GoogleMaps.maps.map.instance);
-			}
+		if ( newMarker ) { 
+			newMarker.setMap(GoogleMaps.maps.map.instance); 
 			newMarker.setPosition(location);
-			newMarker.setAnimation(google.maps.Animation.DROP);
 			infowindow.close();	//remove this if we dont want to close window on move
 
 		} else {
