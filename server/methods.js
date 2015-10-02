@@ -151,12 +151,9 @@ Meteor.methods({
 			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
 		}
 
-		if (Agencies.findOne({
-			$or: [
-				{ name: name },
-				{ email: email },
-			]
-		})) {
+		if (Agencies.find({
+			name: name
+		}).count() > 1) {
 			throw new Meteor.Error("Agency registered", "An agency with this name or email has been registered in our database!");
 		}
 

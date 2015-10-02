@@ -123,12 +123,23 @@ Template.agencyItem.events({
 	},
 
 	'click #delete-agency-button': function () {
-		Meteor.call('deleteAgency', this._id, function (error, result) {
-			if (error) {
-				swal('Delete Agency', error.reason, 'error');
-			} else {
-				swal('Delete Agency', 'The agency has been successfully removed from the database!', 'success');
-			}
-		});
+		swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this operator!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            closeOnConfirm: false,
+            confirmButtonColor: "#E51C23",
+            html: false
+        }, function() {
+            Meteor.call('deleteAgency', this._id, function (error, result) {
+				if (error) {
+					swal('Delete Agency', error.reason, 'error');
+				} else {
+					swal('Delete Agency', 'The agency has been successfully removed from the database!', 'success');
+				}
+			});
+        }.bind(this));
 	}
 });

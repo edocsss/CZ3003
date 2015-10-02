@@ -16,6 +16,8 @@ Template.editCallCenterOperator.onRendered(function () {
 	 					title: 'Edit Call Center Operator',
 	 					text: 'The call center operator has successfully been edited!',
 	 					type: 'success'
+	 				}, function () {
+	 					Router.go('operators');
 	 				});
 	 			}
 	 		});

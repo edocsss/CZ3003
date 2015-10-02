@@ -114,12 +114,23 @@ Template.callCenterOperatorItem.events({
 	},
 
 	'click #delete-operator-button': function () {
-		Meteor.call('deleteCallCenterOperator', this._id, function (error, result) {
-			if (error) {
-				swal('Delete Call Center Operator', error.reason, 'error');
-			} else {
-				swal('Delete Call Center Operator', 'The call center operator account has been successfully removed from the database!', 'success');
-			}
-		});
+		swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this operator!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            closeOnConfirm: false,
+            confirmButtonColor: "#E51C23",
+            html: false
+        }, function() {
+            Meteor.call('deleteCallCenterOperator', this._id, function (error, result) {
+				if (error) {
+					swal('Delete Call Center Operator', error.reason, 'error');
+				} else {
+					swal('Delete Call Center Operator', 'The call center operator account has been successfully removed from the database!', 'success');
+				}
+			});
+        }.bind(this));
 	}
 });

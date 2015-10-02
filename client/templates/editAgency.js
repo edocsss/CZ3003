@@ -24,6 +24,8 @@ Template.editAgency.onRendered(function () {
 		 					title: 'Edit Agency',
 		 					text: 'The agency has successfully been edited!',
 		 					type: 'success'
+		 				}, function () {
+		 					Router.go('agencies');
 		 				});
 		 			}
 		 		});
