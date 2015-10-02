@@ -39,7 +39,11 @@ Template.caseList.helpers({
             }
         }
 
-        return Cases.find(selector); 
+        return Cases.find(selector, {
+            sort: {
+                lastUpdatedOn: -1
+            }
+        }); 
     },
 });
 

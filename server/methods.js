@@ -259,7 +259,7 @@ Meteor.methods({
 			coordinate: coordinate,
 			severity: severity,
 			status: status,
-			// createdBy: createdBy,
+			lastUpdatedOn: new Date(),
 			createdOn: new Date()
 		});
 	},
@@ -278,7 +278,8 @@ Meteor.methods({
 				address: address,
 				coordinate: coordinate,
 				severity: severity,
-				status: status
+				status: status,
+				lastUpdatedOn: new Date()
 			}
 		});
 		var subject = null, content = null;
