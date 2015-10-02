@@ -22,7 +22,96 @@ Template.map.onCreated(function () {
 			placeMarker(event.latLng);
 		}); 
 
+<<<<<<< HEAD
 		Cases.find({}).observe({  
+=======
+			markerList[caseinp._id].addListener('click', function() {
+				if (prev_infowindow){	
+					prev_infowindow.close();
+				}
+				this.info.open(GoogleMaps.maps.map.instance, this); //has to call this, else reference is lost
+				prev_infowindow = this.info;
+			});
+ 
+		});
+
+	});
+	
+	var query = Cases.find({});
+	Cases.find().observeChanges({  
+		added: function(id, caseInp) {
+		// Create a marker for this data 
+			var col = "";
+			if (caseInp.severity == "High") col = "red";
+			else if (caseInp.severity == "Medium") col = "orange";
+			else col = "yellow";
+			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
+				           new google.maps.Size(22, 40),
+				           new google.maps.Point(0,0),
+				           new google.maps.Point(11, 40));
+
+			markerList[id] = new google.maps.Marker({
+				draggable: false, 
+				position: {lat:caseInp.coordinate.H, lng:caseInp.coordinate.L}, 
+				map: GoogleMaps.maps.map.instance,
+				icon: pinImage, 
+				title: caseInp.title
+			});
+
+			var tmpcont = 
+			'<div class="container-fluid">'+
+				'<h5 id="firstHeading" class="text-center">'+ caseInp.title + '</h5>'+
+				'<b>Location:</b> ' + caseInp.address + '<br>' +
+				'<b>Type:</b> ' + caseInp.category + '<br>' +
+				'<b>Severity:</b> ' + caseInp.severity + '<br>' +
+				'<b>Description:</b> ' + caseInp.description + '<br>' +
+			'</div>';
+
+			markerList[id].info = new google.maps.InfoWindow({ 
+				content: tmpcont
+			});
+
+			//console.log(markerList[markerCnt]); 
+
+			markerList[id].addListener('click', function() {
+				if (prev_infowindow){	
+					prev_infowindow.close();
+				}
+				this.info.open(GoogleMaps.maps.map.instance, this); //has to call this, else reference is lost
+				prev_infowindow = this.info;
+			});
+
+		},
+		changed: function(id, caseInp) {
+			
+			var col = "";
+			if (caseInp.severity == "High") col = "red";
+			else if (caseInp.severity == "Medium") col = "orange";
+			else col = "yellow";
+			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
+				           new google.maps.Size(22, 40),
+				           new google.maps.Point(0,0),
+				           new google.maps.Point(11, 40));
+
+			markers[id].setPosition({lat: caseInp.coordinate.H, lng:caseInp.coordinate.L});
+			markers[id].setIcon(pinImage);
+
+			var tmpcont = 
+			'<div class="container-fluid">'+
+				'<h5 id="firstHeading" class="text-center">'+ caseInp.title + '</h5>'+
+				'<b>Location:</b> ' + caseInp.address + '<br>' +
+				'<b>Type:</b> ' + caseInp.category + '<br>' +
+				'<b>Severity:</b> ' + caseInp.severity + '<br>' +
+				'<b>Description:</b> ' + caseInp.description + '<br>' +
+			'</div>';
+		});*/
+
+		var query = Cases.find({
+			status: 'Approved'
+		});
+
+		query.observe({  
+>>>>>>> origin/master
 			added: function(caseInp) {
 			// Create a marker for this data 
 				var col = "";
@@ -147,117 +236,117 @@ Template.map.onCreated(function () {
 				title: "Submit a new case"
 
 			});
-		}
+		
 
-		currentUser = Meteor.user();
-		var tmpContent = contentStringTop; 
-		if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	 
-		tmpContent = tmpContent + contentStringBot;
-		infowindow = new google.maps.InfoWindow({ content: tmpContent });
+			currentUser = Meteor.user();
+			var tmpContent = contentStringTop; 
+			if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	 
+			tmpContent = tmpContent + contentStringBot;
+			infowindow = new google.maps.InfoWindow({ content: tmpContent });
 
-		// Set infowindow events --> add jQuery validator also
-		google.maps.event.addListener(infowindow, 'domready', function () {
-			var createCaseValidator = $('#create-case-form').validate({
-				submitHandler: function (form, event) {
-					event.preventDefault();
-					
-					console.log("Okay");
-					var title 		= $('#create-case-title').val();
-					var type 		= $('#create-case-type').val();
-					var address 	= $('#create-case-address').val();
-					var description = $('#create-case-description').val();
-					var coordinate  = newMarker.getPosition();
-					var severity;
-
-					if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) {
-						severity    = $('#create-case-severity').val();
-					} else {
-						severity    = "NULL";
-					}
+			// Set infowindow events --> add jQuery validator also
+			google.maps.event.addListener(infowindow, 'domready', function () {
+				var createCaseValidator = $('#create-case-form').validate({
+					submitHandler: function (form, event) {
+						event.preventDefault();
 						
-					console.log(title + type + address + description + coordinate + severity);
-					
-					Meteor.call('addCase', title, type, description, address, coordinate, severity ,function (error, result) {
-						if (error) {
-							swal('Oops!', error.reason, 'error');
+						console.log("Okay");
+						var title 		= $('#create-case-title').val();
+						var type 		= $('#create-case-type').val();
+						var address 	= $('#create-case-address').val();
+						var description = $('#create-case-description').val();
+						var coordinate  = newMarker.getPosition();
+						var severity;
+
+						if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) {
+							severity    = $('#create-case-severity').val();
 						} else {
-							swal({
-								title: 'Thank you!',
-								text: 'The new case has been reported!',
-								type: 'success'
-							});
-							form.reset();			//clear form
-							infowindow.close();		//close infowindow
-							newMarker.setMap(null);	//remove marker
+							severity    = "NULL";
 						}
-					});
-				},
-				rules: {
-					title: {
-						minlength: 3,
-						maxlength: 30,
-						required: true
+							
+						console.log(title + type + address + description + coordinate + severity);
+						
+						Meteor.call('addCase', title, type, description, address, coordinate, severity ,function (error, result) {
+							if (error) {
+								swal('Oops!', error.reason, 'error');
+							} else {
+								swal({
+									title: 'Thank you!',
+									text: 'The new case has been reported!',
+									type: 'success'
+								});
+								form.reset();			//clear form
+								infowindow.close();		//close infowindow
+								newMarker.setMap(null);	//remove marker
+							}
+						});
 					},
-					type: {
-						required: true
+					rules: {
+						title: {
+							minlength: 3,
+							maxlength: 30,
+							required: true
+						},
+						type: {
+							required: true
+						},
+						address: {
+							minlength: 3,
+							maxlength: 50,
+							required: true
+						},
+						description: {
+							minlength: 3,
+							maxlength: 300,
+							required: true
+						},
+						severity: {
+							required: true
+						}
 					},
-					address: {
-						minlength: 3,
-						maxlength: 50,
-						required: true
-					},
-					description: {
-						minlength: 3,
-						maxlength: 300,
-						required: true
-					},
-					severity: {
-						required: true
-					}
-				},
 
-				messages: {
-					title: {
-						minlength: "Title must be between 3 to 30 characters long!",
-						maxlength: "Title must be between 3 to 30 characters long!",
-						required: "You must enter a case title!"
+					messages: {
+						title: {
+							minlength: "Title must be between 3 to 30 characters long!",
+							maxlength: "Title must be between 3 to 30 characters long!",
+							required: "You must enter a case title!"
+						},
+						type: {
+							required: "You must select a case type!"
+						}, 
+						address: {
+							minlength: "Address must be between 3 to 50 characters long!",
+							maxlength: "Address must be between 3 to 50 characters long!",
+							required: "You must enter an address!"
+						}, 
+						description: { 
+							maxlength: "Description cannot exceed 300 characters!",
+							required: "You must enter a description!"
+						},
+						severity: {
+							required: "You must select a severity level!"
+						}
 					},
-					type: {
-						required: "You must select a case type!"
-					}, 
-					address: {
-						minlength: "Address must be between 3 to 50 characters long!",
-						maxlength: "Address must be between 3 to 50 characters long!",
-						required: "You must enter an address!"
-					}, 
-					description: { 
-						maxlength: "Description cannot exceed 300 characters!",
-						required: "You must enter a description!"
+					highlight: function (element) {
+						$(element).closest('.form-group').addClass('has-error');
+						$(element).closest('.form-group').removeClass('has-success');
 					},
-					severity: {
-						required: "You must select a severity level!"
+					unhighlight: function (element) {
+						$(element).closest('.form-group').addClass('has-success');
+						$(element).closest('.form-group').removeClass('has-error');
+					},
+					errorElement: 'span',
+					errorClass: 'help-block',
+					errorPlacement: function (error, element) {
+						if (element.parent('.input-group').length) {
+							error.insertAfter(element.parent());
+						} else {
+							error.insertAfter(element);
+						}
 					}
-				},
-				highlight: function (element) {
-					$(element).closest('.form-group').addClass('has-error');
-					$(element).closest('.form-group').removeClass('has-success');
-				},
-				unhighlight: function (element) {
-					$(element).closest('.form-group').addClass('has-success');
-					$(element).closest('.form-group').removeClass('has-error');
-				},
-				errorElement: 'span',
-				errorClass: 'help-block',
-				errorPlacement: function (error, element) {
-					if (element.parent('.input-group').length) {
-						error.insertAfter(element.parent());
-					} else {
-						error.insertAfter(element);
-					}
-				}
+				});
 			});
-		});
-
+ 
 		//open by default
 		if (prev_infowindow){	
 			prev_infowindow.close();
@@ -271,7 +360,7 @@ Template.map.onCreated(function () {
 			}
 			infowindow.open(GoogleMaps.maps.map.instance, newMarker);
 			prev_infowindow = infowindow;
-		});
+		}); 
 	}
 });
 
