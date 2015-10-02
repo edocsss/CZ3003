@@ -243,6 +243,14 @@ Meteor.methods({
 			// createdBy = currentUser.emails[0].address;
 			if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) {
 				status = "Approved";
+				var subject = "🔔 " + category + " at " + address + ".";
+				var content = "We have received a report of " + category + " with details: " +
+					"Address     : " + address + "<br>" +
+					"Description : " + description + "br>" +
+					"Severity        : " + severity + "<br>" +
+					"Date/time   : " + new Date() + "<br>" +
+					"Please avoid travelling to that area until further notification is sent.<br>";
+				Meteor.call("broadcastEmail", subject, content);
 			}
 		}
 
