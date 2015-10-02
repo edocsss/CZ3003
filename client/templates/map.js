@@ -8,8 +8,10 @@ var contentStringMid;
 var contentStringBot;
 
 var infowindow;
+var prev_infowindow;
+
 var newMarker; 
-var markerList = [];
+var markerList = []; 
 var markerCnt = 0;
 var casesList = {};   
 var currentUser;
@@ -25,7 +27,7 @@ Template.map.onCreated(function () {
 		//console.log(casesList);
 		casesList.forEach(function(caseinp){
 			//console.log(caseinp);
-			console.log(caseinp.coordinate);
+			//console.log(caseinp.coordinate);
 			var col = "";
 			if (caseinp.severity == "High") col = "red";
 			else if (caseinp.severity == "Medium") col = "orange";
@@ -35,7 +37,7 @@ Template.map.onCreated(function () {
 				           new google.maps.Point(0,0),
 				           new google.maps.Point(11, 40));
 				
-			markerList[markerCnt++] = new google.maps.Marker({
+			markerList[markerCnt] = new google.maps.Marker({
 				draggable: false, 
 				position: {lat:caseinp.coordinate.H, lng:caseinp.coordinate.L}, //new google.maps.LatLng(caseinp.coordinate),// 
 				map: GoogleMaps.maps.map.instance,
@@ -43,6 +45,30 @@ Template.map.onCreated(function () {
 				title: "Submit a new case" 
 			});
 
+			var tmpcont = 
+			'<div class="container-fluid">'+
+				'<h5 id="firstHeading" class="text-center">'+ caseinp.title + '</h5>'+
+				'Location: ' + caseinp.address + '<br>' +
+				'Type: ' + caseinp.type + '<br>' +
+				'Severity: ' + caseinp.severity + '<br>' +
+				'Description: ' + caseinp.description + '<br>' +
+			'</div>';
+
+			markerList[markerCnt].info = new google.maps.InfoWindow({ 
+				content: tmpcont
+			});
+
+			//console.log(markerList[markerCnt]); 
+
+			markerList[markerCnt].addListener('click', function() {
+				if (prev_infowindow){	
+					prev_infowindow.close();
+				}
+				this.info.open(GoogleMaps.maps.map.instance, this); //has to call this, else reference is lost
+				prev_infowindow = this.info;
+			});
+
+			++markerCnt;
 		});
 
 	});
@@ -52,8 +78,12 @@ Template.map.onCreated(function () {
 
 	function placeMarker(location) {
 		if ( newMarker ) {
+			if (newMarker.map == null){ 
+				newMarker.setMap(GoogleMaps.maps.map.instance);
+			}
 			newMarker.setPosition(location);
-			infowindow.close();
+			newMarker.setAnimation(google.maps.Animation.DROP);
+			infowindow.close();	//remove this if we dont want to close window on move
 
 		} else {
  
@@ -76,11 +106,8 @@ Template.map.onCreated(function () {
 			tmpContent = contentStringTop; 
 			currentUser = Meteor.user();
 			if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1){
-				tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	
-				console.log("IsAdmin");
-				console.log(contentStringMid);
-			}  
-			console.log(currentUser);
+				tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	 
+			}   
 			tmpContent = tmpContent + contentStringBot;
 
 			infowindow = new google.maps.InfoWindow({ 
@@ -88,6 +115,9 @@ Template.map.onCreated(function () {
 			});
 
 			newMarker.addListener('click', function() {
+				if (prev_infowindow){	
+					prev_infowindow.close();
+				}
 				infowindow.open(GoogleMaps.maps.map.instance, newMarker);
 
 				// THIS VALIDATOR MUST BE INSIDE THIS LISTENER
@@ -121,9 +151,9 @@ Template.map.onCreated(function () {
 									text: 'The new case has been reported!',
 									type: 'success'
 								});
-								form.reset();
-								infowindow.close();
-								console.log("It Okay");
+								form.reset();			//clear form
+								infowindow.close();		//close infowindow
+								newMarker.setMap(null);	//remove marker
 							}
 						});
 					},
@@ -212,7 +242,7 @@ Template.map.helpers({
 Template.map.onRendered(function () {
 
 	contentString =   
-		'<div class="container windowbox" >'+
+		'<div class="container-fluid windowbox" >'+
 			'<h5 id="firstHeading" class="text-center">Create New Case</h5>'+
 
 			'<form class="form-horizontal center-block" id ="create-case-form">' +
