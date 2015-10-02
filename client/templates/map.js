@@ -37,30 +37,78 @@ Template.map.onCreated(function () {
 				           new google.maps.Point(0,0),
 				           new google.maps.Point(11, 40));
 				
-			markerList[markerCnt] = new google.maps.Marker({
+			markerList[caseinp._id] = new google.maps.Marker({
 				draggable: false, 
 				position: {lat:caseinp.coordinate.H, lng:caseinp.coordinate.L}, //new google.maps.LatLng(caseinp.coordinate),// 
 				map: GoogleMaps.maps.map.instance,
 				icon: pinImage, 
-				title: "Submit a new case" 
+				title: caseinp.title
 			});
 
 			var tmpcont = 
 			'<div class="container-fluid">'+
 				'<h5 id="firstHeading" class="text-center">'+ caseinp.title + '</h5>'+
 				'Location: ' + caseinp.address + '<br>' +
-				'Type: ' + caseinp.type + '<br>' +
+				'Type: ' + caseinp.category + '<br>' +
 				'Severity: ' + caseinp.severity + '<br>' +
 				'Description: ' + caseinp.description + '<br>' +
 			'</div>';
 
-			markerList[markerCnt].info = new google.maps.InfoWindow({ 
+			markerList[caseinp._id].info = new google.maps.InfoWindow({ 
 				content: tmpcont
 			});
 
 			//console.log(markerList[markerCnt]); 
 
-			markerList[markerCnt].addListener('click', function() {
+			markerList[caseinp._id].addListener('click', function() {
+				if (prev_infowindow){	
+					prev_infowindow.close();
+				}
+				this.info.open(GoogleMaps.maps.map.instance, this); //has to call this, else reference is lost
+				prev_infowindow = this.info;
+			});
+ 
+		});
+
+	});
+	
+	var query = Cases.find({});
+	query.observeChanges({  
+		added: function(id, caseInp) {
+		// Create a marker for this data 
+			var col = "";
+			if (caseInp.severity == "High") col = "red";
+			else if (caseInp.severity == "Medium") col = "orange";
+			else col = "yellow";
+			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
+				           new google.maps.Size(22, 40),
+				           new google.maps.Point(0,0),
+				           new google.maps.Point(11, 40));
+
+			markerList[id] = new google.maps.Marker({
+				draggable: false, 
+				position: {lat:caseInp.coordinate.H, lng:caseInp.coordinate.L}, 
+				map: GoogleMaps.maps.map.instance,
+				icon: pinImage, 
+				title: caseInp.title
+			});
+
+			var tmpcont = 
+			'<div class="container-fluid">'+
+				'<h5 id="firstHeading" class="text-center">'+ caseInp.title + '</h5>'+
+				'Location: ' + caseInp.address + '<br>' +
+				'Type: ' + caseInp.category + '<br>' +
+				'Severity: ' + caseInp.severity + '<br>' +
+				'Description: ' + caseInp.description + '<br>' +
+			'</div>';
+
+			markerList[id].info = new google.maps.InfoWindow({ 
+				content: tmpcont
+			});
+
+			//console.log(markerList[markerCnt]); 
+
+			markerList[id].addListener('click', function() {
 				if (prev_infowindow){	
 					prev_infowindow.close();
 				}
@@ -68,11 +116,54 @@ Template.map.onCreated(function () {
 				prev_infowindow = this.info;
 			});
 
-			++markerCnt;
-		});
+		},
+		changed: function(id, caseInp) {
+			
+			var col = "";
+			if (caseInp.severity == "High") col = "red";
+			else if (caseInp.severity == "Medium") col = "orange";
+			else col = "yellow";
+			var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
+				           new google.maps.Size(22, 40),
+				           new google.maps.Point(0,0),
+				           new google.maps.Point(11, 40));
 
-	});
-	
+			markers[id].setPosition({lat: caseInp.coordinate.H, lng:caseInp.coordinate.L});
+			markers[id].setIcon(pinImage);
+
+			var tmpcont = 
+			'<div class="container-fluid">'+
+				'<h5 id="firstHeading" class="text-center">'+ caseInp.title + '</h5>'+
+				'Location: ' + caseInp.address + '<br>' +
+				'Type: ' + caseInp.category + '<br>' +
+				'Severity: ' + caseInp.severity + '<br>' +
+				'Description: ' + caseInp.description + '<br>' +
+			'</div>';
+
+			markerList[id].info = new google.maps.InfoWindow({ 
+				content: tmpcont
+			}); 
+
+			markerList[id].addListener('click', function() {
+				if (prev_infowindow){	
+					prev_infowindow.close();
+				}
+				this.info.open(GoogleMaps.maps.map.instance, this); //has to call this, else reference is lost
+				prev_infowindow = this.info;
+			});
+		},
+		removed: function(id, caseInp) {
+			// Remove the marker from the map
+			markerList[id].setMap(null);
+
+			// Clear the event listener
+			google.maps.event.clearInstanceListeners(
+			markerList[id]);
+
+			// Remove the reference to this marker instance
+			//delete markers[oldDocument._id];
+		}
+	});	
 	
 
 
@@ -382,8 +473,8 @@ Template.map.onRendered(function () {
 	Benerin form --> ikutin Bootstrap classes (see resetPasswordForm for example) V
 	Form checking --> use jQuery validator (see other JS files loginForm.js) vv
 	create insert method @ methods.js v
-	Marker --> different color and undragable for existing cases 
-	Load existing cases marker initially
+	Marker --> different color and undragable for existing cases v
+	Load existing cases marker initially v
 	Observe realtime cases (see below)
 	Kalau ada user lgsg approve, else pending + severity NULL v
 
