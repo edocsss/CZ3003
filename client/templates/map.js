@@ -48,10 +48,10 @@ Template.map.onCreated(function () {
 			var tmpcont = 
 			'<div class="container-fluid">'+
 				'<h5 id="firstHeading" class="text-center">'+ caseinp.title + '</h5>'+
-				'Location: ' + caseinp.address + '<br>' +
-				'Type: ' + caseinp.category + '<br>' +
-				'Severity: ' + caseinp.severity + '<br>' +
-				'Description: ' + caseinp.description + '<br>' +
+				'<b>Location:</b> ' + caseinp.address + '<br>' +
+				'<b>Type:</b> ' + caseinp.category + '<br>' +
+				'<b>Severity:</b> ' + caseinp.severity + '<br>' +
+				'<b>Description:</b> ' + caseinp.description + '<br>' +
 			'</div>';
 
 			markerList[caseinp._id].info = new google.maps.InfoWindow({ 
