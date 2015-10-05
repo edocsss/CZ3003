@@ -21,6 +21,42 @@ Template.map.onCreated(function () {
 		google.maps.event.addListener(map.instance, 'click', function(event) {
 			placeMarker(event.latLng);
 		});  
+				
+		// bounds of the desired area
+		//center: new google.maps.LatLng(1.346286, 103.680793),
+		var allowedBounds = new google.maps.LatLngBounds(
+		  new google.maps.LatLng(1.206286, 103.580793),
+		  new google.maps.LatLng(1.496286, 104.080793)
+		);
+		var boundLimits = {
+			maxLat : allowedBounds.getNorthEast().lat(),
+			maxLng : allowedBounds.getNorthEast().lng(),
+			minLat : allowedBounds.getSouthWest().lat(),
+			minLng : allowedBounds.getSouthWest().lng()
+		};
+
+		var lastValidCenter = map.instance.getCenter();
+		var newLat, newLng; 
+		google.maps.event.addListener(map.instance, 'center_changed', function() {
+			
+			var center = map.instance.getCenter();
+			
+			if (allowedBounds.contains(center)) {
+				// still within valid bounds, so save the last valid position
+				lastValidCenter = map.instance.getCenter();
+				return;
+			}
+			newLat = lastValidCenter.lat();
+			newLng = lastValidCenter.lng();
+			if(center.lng() > boundLimits.minLng && center.lng() < boundLimits.maxLng){
+				newLng = center.lng();
+			}
+			if(center.lat() > boundLimits.minLat && center.lat() < boundLimits.maxLat){
+				newLat = center.lat();
+			}
+			map.instance.panTo(new google.maps.LatLng(newLat, newLng));
+		});
+
 
 		var query = Cases.find({
 			status: 'Approved'
