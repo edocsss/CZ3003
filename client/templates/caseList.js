@@ -45,6 +45,9 @@ Template.caseList.helpers({
             }
         }); 
     },
+    isSeveritySet: function () {
+    	return this.severity === null;
+    }
 });
 
 Template.caseList.events({
@@ -61,25 +64,6 @@ Template.caseList.events({
         Session.set('filterCategory', category);
         Session.set('filterSeverity', severity);
         Session.set('filterStatus', status);
-
-        // $("#case-table > tbody > tr").each(function () {
-        //     var children = $(this).children();
-        //     var fail = false;
-        //     if (category !== "" && children[1].textContent !== category) {
-        //         fail = true;
-        //     }
-        //     if (severity !== "" && children[3].textContent !== severity) {
-        //         fail = true;
-        //     }
-        //     if (status !== "" && children[4].textContent !== status) {
-        //         fail = true;
-        //     }
-        //     if (fail) {
-        //         $(this).hide();
-        //     } else {
-        //         $(this).show();
-        //     }
-        // });
     },
 
     'click #delete-case-button': function () {

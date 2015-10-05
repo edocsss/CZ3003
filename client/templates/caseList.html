@@ -88,7 +88,13 @@
         <td>{{this.title}}</td>
         <td>{{this.category}}</td>
         <td>{{this.address}}</td>
-        <td>{{this.severity}}</td>
+        <td>   
+            {{#if isSeveritySet}}
+                {{this.severity}}
+            {{else}}
+                -
+            {{/if}}
+        </td>
         <!-- <td>{{this.createdOn}}</td> -->
         <td>{{this.status}}</td>
         <td>
