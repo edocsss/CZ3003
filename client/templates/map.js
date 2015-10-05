@@ -33,7 +33,8 @@ Template.map.onCreated(function () {
 				var id = caseInp._id;
 				//console.log("Added: " + id);
 				
-				if (caseInp.severity == "High") col = "red";
+				if (caseInp.severity == "Very High") col = "black";
+				else if (caseInp.severity == "High") col = "red";
 				else if (caseInp.severity == "Medium") col = "orange";
 				else col = "yellow";
 				var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
@@ -76,7 +77,8 @@ Template.map.onCreated(function () {
 				var col = "";
 				//console.log("Edited: " + id);
 
-				if (caseInp.severity == "High") col = "red";
+				if (caseInp.severity == "Very High") col = "black";
+				else if (caseInp.severity == "High") col = "red";
 				else if (caseInp.severity == "Medium") col = "orange";
 				else col = "yellow";
 				var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
@@ -377,6 +379,7 @@ Template.map.onRendered(function () {
 						 	'<option value="Low">Low</option>'+
 						  	'<option value="Medium">Medium</option>'+
 						  	'<option value="High">High</option>'+ 
+						  	'<option value="Very High">Very High</option>'+ 
 						'</select>'+
 					'</div>'+
 				'</div>';
