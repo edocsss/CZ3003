@@ -71,16 +71,15 @@ Meteor.methods({
 	},
 
 	// Expecting the created or updated case object (the whole object)
-	postFB: function (caseObject) {
+	postFB: function (content) {
 		// Craft the message here
-		var message = "Testing";
 		var url = "https://graph.facebook.com/758909260920907/feed";
 
 		this.unblock();
 		HTTP.post(url, {
 			data: {
-				message: message,
-				access_token: 'CAAGtMZBL5drQBAGlCJxzczjqmOJtdp8V635KoJPQKLBVNAVia3ttjYlJk3T5fJygxio7ExvhPDz3ZAHZCcm3F9ZASiHLhc7gIYYhUt61wJBYSrpjPWbVtblL6uPfu9filYRougbjLZAM5tmgZAjG59PHkhbS9pkAMMb4JIptVRzZCEeolqZA9k4M'
+				message: content
+,				access_token: 'CAAGtMZBL5drQBAGlCJxzczjqmOJtdp8V635KoJPQKLBVNAVia3ttjYlJk3T5fJygxio7ExvhPDz3ZAHZCcm3F9ZASiHLhc7gIYYhUt61wJBYSrpjPWbVtblL6uPfu9filYRougbjLZAM5tmgZAjG59PHkhbS9pkAMMb4JIptVRzZCEeolqZA9k4M'
 			}
 		}, function (error, result) {
 			if (error) {
@@ -91,13 +90,11 @@ Meteor.methods({
 		});
 	},
 
-	postTweet: function (caseObject) {
-		// Craft the message here
-		var message = "Testing";
+	postTweet: function (content) {
 		var url = 'statuses/update';
 
 		twitter.post(url, {
-			status: message
+			status: content
 		}, function (error, data, result) {
 			if (error) {
 				console.log(error);
@@ -248,6 +245,16 @@ Meteor.methods({
 					"Date/time   : " + new Date() + "<br>" +
 					"Please avoid travelling to that area until further notification is sent.<br>";
 				Meteor.call("broadcastEmail", subject, content);
+
+				var contentFB = "A " + category + " has been reported at " + address + " on " +
+								new Date() + " with severity " + severity + "." +
+								"All citizens are advised not to approach the area until further update." + "\n\n" +
+								"ID70 Crisis Management Team";
+				Meteor.call("postFB", contentFB);
+
+				var contentTwitter = "A " + category + " has been reported at " + address +
+									 " on " + new Date() + ".";
+				Meteor.call("postTweet", contentTwitter);
 			}
 		}
  
@@ -282,8 +289,9 @@ Meteor.methods({
 				lastUpdatedOn: new Date()
 			}
 		});
-		var subject = null, content = null;
+		var subject = null, content = null, contentFB = null, contentTwitter = null;
 
+		// A "just-approved" case
 		if (oldCase.status === "Pending" && status === "Approved") {
 			subject = "🔔 " + category + " at " + address + ".";
 			content = "We have received a report of " + category + " with details: " +
@@ -292,18 +300,39 @@ Meteor.methods({
 				"Severity        : " + severity + "<br>" +
 				"Date/time   : " + oldCase.createdOn + "<br>" +
 				"Please avoid travelling to that area until further notification is sent.<br>";
-		} else if (status === "Closed") {
+
+			contentFB = "A " + category +" has been reported at " + address + " on " + oldCase.createdOn + " with " + severity + " severity" + 
+						"All citizens are advised not to approach the are until further update." + "\n\n" + 
+						"ID70 Crisis Management Team";
+
+			contentTwitter = "A " + category + " has been reported at " + address + " on " + oldCase.createdOn + ".";
+		} 
+		// A closed case
+		else if (status === "Closed") {
 			subject = "[CASE CLOSED] " + category + " at " + address + ".";
 			content = "The " + category + " reported at " + address + " on " + oldCase.createdOn + " has been resolved.<br>";
-		} else {
+			contentFB = "The " + category + " reported at " + address + " on " + oldCase.createdOn + " has been resolved." + "\n\n" + "ID70 Crisis Management Team";
+			contentTwitter = "The " + category + " reported at " + addres + " on " + oldCase.createdOn + " has been resolved.";
+		} 
+		// Any other update (usual case edit)
+		else {
 			subject = "🔔 " + category + " at " + address + ".";
 			content = "The " + category + " reported at " + oldCase.address + " on " + oldCase.createdOn + " has been updated  " +
 				"Address     : " + address + "<br>" +
 				"Description : " + description + "br>" +
 				"Severity        : " + severity + "<br>" +
 				"Please avoid travelling to that area until further notification is sent.<br>";
+
+			contentFB = "[UPDATE] " + category + " has been reported at " + address + " on " + oldCase.createdOn +".\n" +
+						"All citizens are advised not to approach the area until further update." + "\n\n" +
+						"ID70 Crisis Management Team";
+
+			contentTwitter = "[UPDATE] " + category + " has been reported at " + address + " on " + oldCase.createdOn +".";
 		}
+
 		Meteor.call("broadcastEmail", subject, content);
+		Meteor.call("postFB", contentFB);
+		Meteor.call("postTweet", contentTwitter);
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL

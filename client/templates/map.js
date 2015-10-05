@@ -316,7 +316,7 @@ Template.map.onRendered(function () {
 					'<div class="col-sm-12">'+
 		    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
 		    				'<option selected disabled hidden value="">Case Type</option>' +
-						 	'<option value="Fire">Fire</option>'+
+						 	'<option value="Fire Accidents">Fire Accidents</option>'+
 						  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
 						'</select>'+
 					'</div>'+
@@ -363,7 +363,7 @@ Template.map.onRendered(function () {
 					'<div class="col-sm-12">'+
 		    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
 		    				'<option selected disabled hidden value="">Case Type</option>' +
-						 	'<option value="Fire">Fire</option>'+
+						 	'<option value="Fire Accidents">Fire Accidents</option>'+
 						  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
 						'</select>'+
 					'</div>'+
