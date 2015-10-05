@@ -21,6 +21,42 @@ Template.map.onCreated(function () {
 		google.maps.event.addListener(map.instance, 'click', function(event) {
 			placeMarker(event.latLng);
 		});  
+				
+		// bounds of the desired area
+		//center: new google.maps.LatLng(1.346286, 103.680793),
+		var allowedBounds = new google.maps.LatLngBounds(
+		  new google.maps.LatLng(1.206286, 103.580793),
+		  new google.maps.LatLng(1.496286, 104.080793)
+		);
+		var boundLimits = {
+			maxLat : allowedBounds.getNorthEast().lat(),
+			maxLng : allowedBounds.getNorthEast().lng(),
+			minLat : allowedBounds.getSouthWest().lat(),
+			minLng : allowedBounds.getSouthWest().lng()
+		};
+
+		var lastValidCenter = map.instance.getCenter();
+		var newLat, newLng; 
+		google.maps.event.addListener(map.instance, 'center_changed', function() {
+			
+			var center = map.instance.getCenter();
+			
+			if (allowedBounds.contains(center)) {
+				// still within valid bounds, so save the last valid position
+				lastValidCenter = map.instance.getCenter();
+				return;
+			}
+			newLat = lastValidCenter.lat();
+			newLng = lastValidCenter.lng();
+			if(center.lng() > boundLimits.minLng && center.lng() < boundLimits.maxLng){
+				newLng = center.lng();
+			}
+			if(center.lat() > boundLimits.minLat && center.lat() < boundLimits.maxLat){
+				newLat = center.lat();
+			}
+			map.instance.panTo(new google.maps.LatLng(newLat, newLng));
+		});
+
 
 		var query = Cases.find({
 			status: 'Approved'
@@ -33,7 +69,8 @@ Template.map.onCreated(function () {
 				var id = caseInp._id;
 				//console.log("Added: " + id);
 				
-				if (caseInp.severity == "High") col = "red";
+				if (caseInp.severity == "Very High") col = "black";
+				else if (caseInp.severity == "High") col = "red";
 				else if (caseInp.severity == "Medium") col = "orange";
 				else col = "yellow";
 				var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
@@ -76,7 +113,8 @@ Template.map.onCreated(function () {
 				var col = "";
 				//console.log("Edited: " + id);
 
-				if (caseInp.severity == "High") col = "red";
+				if (caseInp.severity == "Very High") col = "black";
+				else if (caseInp.severity == "High") col = "red";
 				else if (caseInp.severity == "Medium") col = "orange";
 				else col = "yellow";
 				var pinImage = new google.maps.MarkerImage("https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_" + col + ".png",
@@ -377,6 +415,7 @@ Template.map.onRendered(function () {
 						 	'<option value="Low">Low</option>'+
 						  	'<option value="Medium">Medium</option>'+
 						  	'<option value="High">High</option>'+ 
+						  	'<option value="Very High">Very High</option>'+ 
 						'</select>'+
 					'</div>'+
 				'</div>';
