@@ -8,7 +8,12 @@ Template.navbar.helpers({
 Template.navbar.events({
 	'click .logout-link': function (event) {
 		event.preventDefault();
-		Meteor.logout();
-		Router.go('home');
+		Meteor.logout(function (error) {
+			if (error) {
+				console.log(error);
+			} else {
+				Router.go('home');
+			}
+		});
 	}
 });

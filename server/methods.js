@@ -318,7 +318,8 @@ Meteor.methods({
 				Meteor.call("postTweet", contentTwitter);
 			}
 		}
- 
+ 		
+ 		console.log(coordinate);
 		Cases.insert({
 			title: title,
 			category: category,

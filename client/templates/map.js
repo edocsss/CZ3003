@@ -210,7 +210,7 @@ Template.map.onCreated(function () {
 				submitHandler: function (form, event) {
 					event.preventDefault();
 					
-					console.log("Okay");
+					console.log(newMarker.getPosition());
 					var title 		= $('#create-case-title').val();
 					var type 		= $('#create-case-type').val();
 					var address 	= $('#create-case-address').val();

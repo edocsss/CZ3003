@@ -44,9 +44,6 @@ Template.caseList.helpers({
                 lastUpdatedOn: -1
             }
         }); 
-    },
-    isSeveritySet: function () {
-    	return this.severity === null;
     }
 });
 
@@ -86,7 +83,11 @@ Template.caseList.events({
                 }
             });
         }.bind(this));
+    }
+});
 
-        
+Template.caseListItem.helpers({
+    isSeveritySet: function () {
+        return this.severity == "NULL";
     }
 });
