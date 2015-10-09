@@ -12,7 +12,7 @@ Meteor.methods({
 
 		var subscriberId = Subscribers.insert({
 			email: emailAddress,
-			createdOn: new Date()
+			createdOn: Meteor.call('convertToGMT8', new Date())
 		});
 
 		var url = Meteor.absoluteUrl() + "/unsubscribe/" + subscriberId;
@@ -54,7 +54,7 @@ Meteor.methods({
 					"Regards,<br>" +
 					"ID70 Crisis Management Team<br>" +
 					"<br>" +
-					"Note: This is an auto generated notification. Please do not reply. <br>";
+					"Note: This is an auto generated notification. Please do not reply. <br><br>";
 		var footer = "";
 		var email = "";
 		Subscribers.find({}).forEach(function (subscriber) {
@@ -78,14 +78,14 @@ Meteor.methods({
 		this.unblock();
 		HTTP.post(url, {
 			data: {
-				message: content
-,				access_token: 'CAAGtMZBL5drQBAGlCJxzczjqmOJtdp8V635KoJPQKLBVNAVia3ttjYlJk3T5fJygxio7ExvhPDz3ZAHZCcm3F9ZASiHLhc7gIYYhUt61wJBYSrpjPWbVtblL6uPfu9filYRougbjLZAM5tmgZAjG59PHkhbS9pkAMMb4JIptVRzZCEeolqZA9k4M'
+				message: content,
+				access_token: 'CAAGtMZBL5drQBAGlCJxzczjqmOJtdp8V635KoJPQKLBVNAVia3ttjYlJk3T5fJygxio7ExvhPDz3ZAHZCcm3F9ZASiHLhc7gIYYhUt61wJBYSrpjPWbVtblL6uPfu9filYRougbjLZAM5tmgZAjG59PHkhbS9pkAMMb4JIptVRzZCEeolqZA9k4M'
 			}
 		}, function (error, result) {
 			if (error) {
 				console.log(error);
 			} else {
-				console.log(result);
+				// console.log(result);
 			}
 		});
 	},
@@ -99,19 +99,80 @@ Meteor.methods({
 			if (error) {
 				console.log(error);
 			} else {
-				console.log(data, result);
+				// console.log(data, result);
 			}
 		});
 	},
 
 	sendCaseSummary: function () {
-		// Fetch the whole list first --> use another method to do this!
-
 		// Construct the summary message here
-		var message = "";
+		var content = "Dear Prime Minister," +
+					  "<br><br>" +
+					  "This email contains a case summary up to " + Meteor.call('convertToGMT8', new Date()) + ".<br><br>" + 
+					  '<table style="width: 100%; border-collapse: collapse; border: 1px solid black">' +
+					  '<thead>' + 
+					  '<tr>' +
+					  '<th style="border: 1px solid black; padding: 5px;">' +
+					  'Title' +
+					  '</th>' +
+					  '<th style="border: 1px solid black; padding: 5px;">' +
+					  'Category' +
+					  '</th>' +
+					  '<th style="border: 1px solid black; padding: 5px;">' +
+					  'Description' +
+					  '</th>' +
+					  '<th style="border: 1px solid black; padding: 5px;">' +
+					  'Address' +
+					  '</th>' +
+					  '<th style="border: 1px solid black; padding: 5px;">' +
+					  'Severity' +
+					  '</th>' +
+					  '<th style="border: 1px solid black; padding: 5px;">' +
+					  'Status' +
+					  '</th>' +
+					  '</tr>' +
+					  '</thead>' +
+					  '<tbody>';
 
-		// Send the summary to PM
-		// Meteor.call('sendEmail', 'primeminister@gov.sg', 'ID70CMS@gov.sg', 'Periodic CMS Case Sumary', message);
+		var cases = Cases.find({});
+
+		if (cases.count() === 0) {
+			content += '<tr>' + '<td colspan="6" style="text-align:center; border: 1px solid black padding: 5px;">' + 'There is no case reported yet!' + '</td>' + '</tr>';
+		} else {
+			Cases.find({}).forEach(function (item) {
+				content +=  '<tr>' +
+							'<td style="border: 1px solid black; padding: 5px;">' +
+							item.title +
+							'</td>' +
+							'<td style="border: 1px solid black; padding: 5px;">' +
+							item.category +
+							'</td>' +
+							'<td style="border: 1px solid black; padding: 5px;">' +
+							item.description +
+							'</td>' +
+							'<td style="border: 1px solid black; padding: 5px;">' +
+							item.address +
+							'</td>' +
+							'<td style="border: 1px solid black; padding: 5px;">' +
+							item.severity +
+							'</td>' +
+							'<td style="border: 1px solid black; padding: 5px;">' +
+							item.status +
+							'</td>' +
+							'</tr>';
+			});
+		}
+
+		content +=  '</tbody>' +
+					'</table>' +
+					'<br><br>' +
+					'ID70 Crisis Management Team';
+
+		Meteor.call('sendEmail',
+			"edocsss@gmail.com",
+			"ID70 Crisis Management System <id70cms@cms.com>",
+			"ID70 30-Minutes Case Summary",
+			content);
 	},
 
 	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
@@ -137,7 +198,7 @@ Meteor.methods({
 			contact: contact,
 			address: address,
 			createdBy: Meteor.user().email,
-			createdOn: new Date()
+			createdOn: Meteor.call('convertToGMT8', new Date())
 		});
 	},
 
@@ -190,7 +251,7 @@ Meteor.methods({
 				contact: contact,
 				address: address,
 				type: 'call-center-operator',
-				createdOn: new Date(),
+				createdOn: Meteor.call('convertToGMT8', new Date()),
 				createdBy: currentUser.emails[0].address
 			}
 		});
@@ -240,20 +301,20 @@ Meteor.methods({
 				var subject = "🔔 " + category + " at " + address + ".";
 				var content = "We have received a report of " + category + " with details: " +
 					"Address     : " + address + "<br>" +
-					"Description : " + description + "br>" +
+					"Description : " + description + "<br>" +
 					"Severity        : " + severity + "<br>" +
-					"Date/time   : " + new Date() + "<br>" +
+					"Date/time   : " + Meteor.call('convertToGMT8', new Date()) + "<br>" +
 					"Please avoid travelling to that area until further notification is sent.<br>";
 				Meteor.call("broadcastEmail", subject, content);
 
 				var contentFB = "A " + category + " has been reported at " + address + " on " +
-								new Date() + " with severity " + severity + "." +
+								Meteor.call('convertToGMT8', new Date()) + " with severity " + severity + ".\n" +
 								"All citizens are advised not to approach the area until further update." + "\n\n" +
 								"ID70 Crisis Management Team";
 				Meteor.call("postFB", contentFB);
 
 				var contentTwitter = "A " + category + " has been reported at " + address +
-									 " on " + new Date() + ".";
+									 " on " + Meteor.call('convertToGMT8', new Date()) + ".";
 				Meteor.call("postTweet", contentTwitter);
 			}
 		}
@@ -266,8 +327,8 @@ Meteor.methods({
 			coordinate: coordinate,
 			severity: severity,
 			status: status,
-			lastUpdatedOn: new Date(),
-			createdOn: new Date()
+			lastUpdatedOn: Meteor.call('convertToGMT8', new Date()),
+			createdOn: Meteor.call('convertToGMT8', new Date())
 		});
 	},
 
@@ -286,7 +347,7 @@ Meteor.methods({
 				coordinate: coordinate,
 				severity: severity,
 				status: status,
-				lastUpdatedOn: new Date()
+				lastUpdatedOn: Meteor.call('convertToGMT8', new Date())
 			}
 		});
 		var subject = null, content = null, contentFB = null, contentTwitter = null;
@@ -294,14 +355,14 @@ Meteor.methods({
 		// A "just-approved" case
 		if (oldCase.status === "Pending" && status === "Approved") {
 			subject = "🔔 " + category + " at " + address + ".";
-			content = "We have received a report of " + category + " with details: " +
+			content = "We have received a report of " + category + " with details: <br>" +
 				"Address     : " + address + "<br>" +
 				"Description : " + description + "br>" +
 				"Severity        : " + severity + "<br>" +
 				"Date/time   : " + oldCase.createdOn + "<br>" +
 				"Please avoid travelling to that area until further notification is sent.<br>";
 
-			contentFB = "A " + category +" has been reported at " + address + " on " + oldCase.createdOn + " with " + severity + " severity" + 
+			contentFB = "A " + category +" has been reported at " + address + " on " + oldCase.createdOn + " with " + severity + " severity" + ".\n" + 
 						"All citizens are advised not to approach the are until further update." + "\n\n" + 
 						"ID70 Crisis Management Team";
 
@@ -317,7 +378,7 @@ Meteor.methods({
 		// Any other update (usual case edit)
 		else {
 			subject = "🔔 " + category + " at " + address + ".";
-			content = "The " + category + " reported at " + oldCase.address + " on " + oldCase.createdOn + " has been updated  " +
+			content = "The " + category + " reported at " + oldCase.address + " on " + oldCase.createdOn + " has been updated.<br>" +
 				"Address     : " + address + "<br>" +
 				"Description : " + description + "br>" +
 				"Severity        : " + severity + "<br>" +
@@ -343,5 +404,12 @@ Meteor.methods({
 		}
 
 		Cases.remove(caseId);
+	},
+
+	convertToGMT8: function (date) {
+		var utc = date.getTime() + date.getTimezoneOffset() * 60 * 1000;
+
+		var singaporeUTCOffset = 8;
+		return new Date(utc + singaporeUTCOffset * 60 * 60 * 1000);
 	}
 });
