@@ -15,7 +15,7 @@ Meteor.methods({
 			createdOn: Meteor.call('convertToGMT8', new Date())
 		});
 
-		var url = Meteor.absoluteUrl() + "/unsubscribe/" + subscriberId;
+		var url = Meteor.absoluteUrl() + "unsubscribe/" + subscriberId;
 		var html = 	"Hi!" +
 					"<br><br>" +
 					"Thank you for subscribing to ID70 Crisis Management System!" +
@@ -47,7 +47,7 @@ Meteor.methods({
 	},
 
 	broadcastEmail: function (subject, content) {
-		var base_url = Meteor.absoluteUrl() + "/unsubscribe/";
+		var base_url = Meteor.absoluteUrl() + "unsubscribe/";
 		var html =  "Dear subscribers," +
 					"<br><br>" +
 					content +
@@ -106,9 +106,10 @@ Meteor.methods({
 
 	sendCaseSummary: function () {
 		// Construct the summary message here
+		var currentDate = Meteor.call('convertToGMT8', new Date());
 		var content = "Dear Prime Minister," +
 					  "<br><br>" +
-					  "This email contains a case summary up to " + Meteor.call('convertToGMT8', new Date()) + ".<br><br>" + 
+					  "This email contains a case summary up to " + Meteor.call('dateToString', currentDate) + ".<br><br>" + 
 					  '<table style="width: 100%; border-collapse: collapse; border: 1px solid black">' +
 					  '<thead>' + 
 					  '<tr>' +
@@ -303,18 +304,18 @@ Meteor.methods({
 					"Address     : " + address + "<br>" +
 					"Description : " + description + "<br>" +
 					"Severity        : " + severity + "<br>" +
-					"Date/time   : " + Meteor.call('convertToGMT8', new Date()) + "<br>" +
+					"Date/time   : " + Meteor.call('dateToString', Meteor.call('convertToGMT8', new Date())) + "<br>" +
 					"Please avoid travelling to that area until further notification is sent.<br>";
 				Meteor.call("broadcastEmail", subject, content);
 
 				var contentFB = "A " + category + " has been reported at " + address + " on " +
-								Meteor.call('convertToGMT8', new Date()) + " with severity " + severity + ".\n" +
+								Meteor.call('dateToString', Meteor.call('convertToGMT8', new Date())) + " with severity " + severity + ".\n" +
 								"All citizens are advised not to approach the area until further update." + "\n\n" +
 								"ID70 Crisis Management Team";
 				Meteor.call("postFB", contentFB);
 
 				var contentTwitter = "A " + category + " has been reported at " + address +
-									 " on " + Meteor.call('convertToGMT8', new Date()) + ".";
+									 " on " + Meteor.call('dateToString', Meteor.call('convertToGMT8', new Date())) + ".";
 				Meteor.call("postTweet", contentTwitter);
 			}
 		}
@@ -360,38 +361,42 @@ Meteor.methods({
 			subject = "🔔 " + category + " at " + address + ".";
 			content = "We have received a report of " + category + " with details: <br>" +
 				"Address     : " + address + "<br>" +
-				"Description : " + description + "br>" +
+				"Description : " + description + "<br>" +
 				"Severity        : " + severity + "<br>" +
-				"Date/time   : " + oldCase.createdOn + "<br>" +
+				"Date/time   : " + Meteor.call('dateToString', oldCase.createdOn) + "<br>" +
 				"Please avoid travelling to that area until further notification is sent.<br>";
 
-			contentFB = "A " + category +" has been reported at " + address + " on " + oldCase.createdOn + " with " + severity + " severity" + ".\n" + 
+			contentFB = "A " + category +" has been reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) + " with " + severity + " severity" + ".\n" + 
 						"All citizens are advised not to approach the are until further update." + "\n\n" + 
 						"ID70 Crisis Management Team";
 
-			contentTwitter = "A " + category + " has been reported at " + address + " on " + oldCase.createdOn + ".";
+			contentTwitter = "A " + category + " has been reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) + ".";
 		} 
 		// A closed case
 		else if (status === "Closed") {
 			subject = "[CASE CLOSED] " + category + " at " + address + ".";
-			content = "The " + category + " reported at " + address + " on " + oldCase.createdOn + " has been resolved.<br>";
-			contentFB = "The " + category + " reported at " + address + " on " + oldCase.createdOn + " has been resolved." + "\n\n" + "ID70 Crisis Management Team";
-			contentTwitter = "The " + category + " reported at " + addres + " on " + oldCase.createdOn + " has been resolved.";
-		} 
+			content = "The " + category + " reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) + " has been resolved.<br>";
+			contentFB = "The " + category + " reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) + " has been resolved." + "\n\n" + "ID70 Crisis Management Team";
+			contentTwitter = "The " + category + " reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) + " has been resolved.";
+		}
+		// Rejected case needs not be broadcasted
+		else if (status === "Rejected") {
+			return;
+		}
 		// Any other update (usual case edit)
 		else {
 			subject = "🔔 " + category + " at " + address + ".";
-			content = "The " + category + " reported at " + oldCase.address + " on " + oldCase.createdOn + " has been updated.<br>" +
+			content = "The " + category + " reported at " + oldCase.address + " on " + Meteor.call('dateToString', oldCase.createdOn) + " has been updated.<br>" +
 				"Address     : " + address + "<br>" +
-				"Description : " + description + "br>" +
+				"Description : " + description + "<br>" +
 				"Severity        : " + severity + "<br>" +
 				"Please avoid travelling to that area until further notification is sent.<br>";
 
-			contentFB = "[UPDATE] " + category + " has been reported at " + address + " on " + oldCase.createdOn +".\n" +
+			contentFB = "[UPDATE] " + category + " has been reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) +".\n" +
 						"All citizens are advised not to approach the area until further update." + "\n\n" +
 						"ID70 Crisis Management Team";
 
-			contentTwitter = "[UPDATE] " + category + " has been reported at " + address + " on " + oldCase.createdOn +".";
+			contentTwitter = "[UPDATE] " + category + " has been reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) +".";
 		}
 
 		Meteor.call("broadcastEmail", subject, content);
@@ -414,5 +419,52 @@ Meteor.methods({
 
 		var singaporeUTCOffset = 8;
 		return new Date(utc + singaporeUTCOffset * 60 * 60 * 1000);
+	},
+
+	dateToString: function (date) {
+		var hour = date.getHours() < 10? "0" + date.getHours() : date.getHours();
+		var minute = date.getMinutes() < 10? "0" + date.getMinutes() : date.getMinutes();
+		var month = date.getMonth() + 1;
+
+		switch (month) {
+			case 1:
+				month = "January";
+				break;
+			case 2:
+				month = "February";
+				break;
+			case 3:
+				month = "March";
+				break;
+			case 4:
+				month = "April";
+				break;
+			case 5:
+				month = "May";
+				break;
+			case 6:
+				month = "June";
+				break;
+			case 7:
+				month = "July";
+				break;
+			case 8:
+				month = "August";
+				break;
+			case 9:
+				month = "September";
+				break;
+			case 10:
+				month = "October";
+				break;
+			case 11:
+				month = "November";
+				break;
+			case 12:
+				month = "December";
+				break;
+		}
+
+		return date.getDate() + " " + month + " " + date.getFullYear() + " " + hour + ":" + minute;
 	}
 });

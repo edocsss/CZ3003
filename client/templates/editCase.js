@@ -24,15 +24,15 @@ Template.editCase.onRendered(function () {
 	 			});
 
 	 			return false;
-	 		} else if (!severity) {
-	 			editCaseValidator.showErrors({
-	 				severity: 'Please select the correct Case Severity!'
-	 			});
-
-	 			return false;
 	 		} else if (!status) {
 	 			editCaseValidator.showErrors({
 	 				status: 'Please select the correct Case Status!'
+	 			});
+
+	 			return false;
+	 		} else if (!severity && status !== "Rejected") {
+	 			editCaseValidator.showErrors({
+	 				severity: 'Please select the correct Case Severity!'
 	 			});
 
 	 			return false;
