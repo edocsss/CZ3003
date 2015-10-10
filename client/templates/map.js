@@ -64,7 +64,7 @@ Template.map.onCreated(function () {
 
 		query.observe({   
 			added: function(caseInp) {
-			// Create a marker for this data 
+				// Create a marker for this data 
 				var col = "";
 				var id = caseInp._id;
 				//console.log("Added: " + id);
@@ -210,7 +210,6 @@ Template.map.onCreated(function () {
 				submitHandler: function (form, event) {
 					event.preventDefault();
 					
-					console.log(newMarker.getPosition());
 					var title 		= $('#create-case-title').val();
 					var type 		= $('#create-case-type').val();
 					var address 	= $('#create-case-address').val();
@@ -223,8 +222,16 @@ Template.map.onCreated(function () {
 					} else {
 						severity    = "NULL";
 					}
-						
-					console.log(title + type + address + description + coordinate + severity);
+
+					if (!type ) {
+						createCaseValidator.showErrors({
+							type: "Please select the correct Case Type!"
+						});
+					} else if (!severity) {
+						createCaseValidator.showErrors({
+							severity: "Please select the correct Case Severity!"
+						});
+					}
 					
 					Meteor.call('addCase', title, type, description, address, coordinate, severity ,function (error, result) {
 						if (error) {

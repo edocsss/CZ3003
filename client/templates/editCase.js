@@ -17,9 +17,22 @@ Template.editCase.onRendered(function () {
 	 		var severity = $('#edit-case-severity').val();
 	 		var status = $('#edit-case-status').val();
 
-	 		if (category === 'select') {
+	 		console.log(severity);
+	 		if (!category) {
 	 			editCaseValidator.showErrors({
 	 				category: 'Please select the correct Case category!'
+	 			});
+
+	 			return false;
+	 		} else if (!severity) {
+	 			editCaseValidator.showErrors({
+	 				severity: 'Please select the correct Case Severity!'
+	 			});
+
+	 			return false;
+	 		} else if (!status) {
+	 			editCaseValidator.showErrors({
+	 				status: 'Please select the correct Case Status!'
 	 			});
 
 	 			return false;

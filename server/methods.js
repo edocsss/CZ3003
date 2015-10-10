@@ -319,13 +319,15 @@ Meteor.methods({
 			}
 		}
  		
- 		console.log(coordinate);
 		Cases.insert({
 			title: title,
 			category: category,
 			description: description,
 			address: address,
-			coordinate: coordinate,
+			coordinate: {
+				H: coordinate.J,
+				L: coordinate.M
+			},
 			severity: severity,
 			status: status,
 			lastUpdatedOn: Meteor.call('convertToGMT8', new Date()),

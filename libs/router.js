@@ -65,12 +65,7 @@ Router.route('editCase', {
 	onBeforeAction: function () {
 		var userId = Meteor.userId();
 		if (userId) {
-			var user = Meteor.users.findOne(userId);
-			if (user.profile.type === 'admin') {
-				this.next();
-			} else {
-				this.redirect('home');
-			}
+			this.next();
 		} else {
 			this.redirect('home');
 		}

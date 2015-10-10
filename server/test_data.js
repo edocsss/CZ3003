@@ -196,7 +196,7 @@ Meteor.startup(function () {
 				H: 1.303774,
 				L: 103.831823
 			},
-			severity: 'Very High',
+			severity: "Very High",
 			status: 'Closed',
 			createdBy: 'system',
 			createdOn: new Date()
@@ -256,7 +256,7 @@ Meteor.startup(function () {
 				H: 1.334554,
 				L: 103.858450
 			},
-			severity: 'Medium',
+			severity: 'Very High',
 			status: 'Rejected',
 			createdBy: 'system',
 			createdOn: new Date()
@@ -271,7 +271,7 @@ Meteor.startup(function () {
 				H: 1.332999,
 				L: 103.866647
 			},
-			severity: 'Medium',
+			severity: 'High',
 			status: 'Closed',
 			createdBy: 'system',
 			createdOn: new Date()
