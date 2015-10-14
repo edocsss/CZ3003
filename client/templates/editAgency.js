@@ -54,20 +54,20 @@ Template.editAgency.onRendered(function () {
 	 	},
 	 	messages: {
 	 		name: {
-	 			required: "You must enter the call center operator's name!",
-	 			minlength: "The call center operator's name must be between 3 to 50 characters!",
-	 			maxlength: "The call center operator's name must be between 3 to 50 characters!"
+	 			required: "You must enter the agency's name!",
+	 			minlength: "The agency's name must be between 3 to 50 characters!",
+	 			maxlength: "The agency's name must be between 3 to 50 characters!"
 	 		},
 	 		contact: {
-	 			required: "You must enter the call center operator's contact number!",
-	 			minlength: "The call center operator's contact number must consist of 8 digits!",
-	 			maxlength: "The call center operator's contact number must consist of 8 digits!",
-	 			digits: "The call center operator's contact number must be consist of digits only!"
+	 			required: "You must enter the agency's contact number!",
+	 			minlength: "The agency's contact number must consist of 8 digits!",
+	 			maxlength: "The agency's contact number must consist of 8 digits!",
+	 			digits: "The agency's contact number must be consist of digits only!"
 	 		},
 	 		address: {
-	 			required: "You must enter the call center operator's address!",
-	 			minlength: "The call center operator's address must be between 3 to 100 characters!",
-	 			maxlength: "The call center operator's address must be between 3 to 100 characters!"
+	 			required: "You must enter the agency's address!",
+	 			minlength: "The agency's address must be between 3 to 100 characters!",
+	 			maxlength: "The agency's address must be between 3 to 100 characters!"
 	 		}
 	 	},
 	 	highlight: function (element) {
