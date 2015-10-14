@@ -19,6 +19,7 @@ var currentUser;
 Template.map.onCreated(function () {
 	GoogleMaps.ready('map', function (map) {
 		google.maps.event.addListener(map.instance, 'click', function(event) {
+			console.log(event.latLng);
 			placeMarker(event.latLng);
 		});  
 				
@@ -168,7 +169,11 @@ Template.map.onCreated(function () {
 	function placeMarker(location) {
 		if ( newMarker ) { 
 			newMarker.setMap(GoogleMaps.maps.map.instance); 
-			newMarker.setPosition(location);
+			newMarker.position = {
+				lat: location.lat(),
+				lng: location.lng()
+			};
+
 			infowindow.close();	//remove this if we dont want to close window on move
 
 			// // Reinitialize InfoWindow --> because there is a possibility that the user signs in and there is a marker opened
@@ -231,7 +236,8 @@ Template.map.onCreated(function () {
 						});
 					}
 					
-					Meteor.call('addCase', title, type, description, address, coordinate, severity ,function (error, result) {
+
+					Meteor.call('addCase', title, type, description, address, {H: coordinate.lat(), L: coordinate.lng() }, severity ,function (error, result) {
 						if (error) {
 							swal('Oops!', error.reason, 'error');
 						} else {

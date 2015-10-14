@@ -63,6 +63,9 @@ Meteor.startup(function () {
 		events: {
 			'30 * * * *': function () {
 				Meteor.call('sendCaseSummary');
+			},
+			'0 * * * * ': function () {
+				Meteor.call('sendCaseSummary');
 			}
 		}
 	});

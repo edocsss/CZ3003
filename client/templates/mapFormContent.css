@@ -1,0 +1,12 @@
+button {
+	width: 100%;
+}
+ 
+.formwidth {
+    width:350px;
+} 
+.windowbox{
+	width:350px; 
+	overflow-x: hidden; 
+}
+ 

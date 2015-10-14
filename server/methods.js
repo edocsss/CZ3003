@@ -290,6 +290,7 @@ Meteor.methods({
 	},
 
 	addCase: function (title, category, description, address, coordinate, severity) {
+		console.log(coordinate);
 		// todo: limit length of address
 
 		var currentUser = Meteor.user();
@@ -333,10 +334,7 @@ Meteor.methods({
 			category: category,
 			description: description,
 			address: address,
-			coordinate: {
-				H: coordinate.J,
-				L: coordinate.M
-			},
+			coordinate: coordinate,
 			severity: severity,
 			status: status,
 			lastUpdatedOn: Meteor.call('convertToGMT8', new Date()),
