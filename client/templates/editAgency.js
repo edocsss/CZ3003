@@ -98,6 +98,9 @@ jQuery.validator.addMethod("categoryCheck", function(value, element) {
 Template.editAgency.helpers({
 	isCategorySelected: function (k) {
 		return k === this.category;
+	},
+	getCategoryList: function () {
+		return Categories.find();
 	}
 });
 
