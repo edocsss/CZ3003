@@ -73,8 +73,11 @@
 								<div class="col-xs-offset-1 col-xs-10">
 									<select class="form-control" name="category" id="add-agency-category">
 										<option value="select" selected>Select Agency Category</option>
-										<option value="Traffic Accidents">Traffic Accidents</option>
-										<option value="Fire Accidents">Fire Accidents</option>
+										{{#each getCategoryList}}
+				                            <option value="{{name}}">{{name}}</option>
+				                        {{/each}}
+										<!-- <option value="Traffic Accidents">Traffic Accidents</option>
+										<option value="Fire Accidents">Fire Accidents</option> -->
 									</select>
 								</div>
 							</div>

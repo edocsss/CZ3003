@@ -1,4 +1,19 @@
 Meteor.startup(function () {
+	// Setting up the Case Categories
+	var categoryList = ["Traffic Accidents", "Fire Accidents", "Gas Leak", "Ambulance Emergency"];
+	if (Categories.find().count() < categoryList.length) {
+		// Empty the Categories collection first
+		Categories.remove();
+
+		for (var x = 0; x < categoryList.length; x++) {
+			console.log(categoryList[x]);
+			Categories.insert({
+				name: categoryList[x]
+			});
+		}
+	}
+
+
 	// Setting up Accounts EMAIL TEMPLATE
 	Accounts.emailTemplates.siteName = 'ID70 Crisis Management System';
 	Accounts.emailTemplates.from = "ID70 Crisis Management System <id70cms@cms.com>";

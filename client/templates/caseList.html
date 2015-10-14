@@ -51,8 +51,9 @@
             <div class="col-sm-10">
             <select class="form-control filter-case" name="category" id ="filter-case-category"> 
                 <option value="All">All</option>
-                <option value="Fire Accidents">Fire Accidents</option>
-                <option value="Traffic Accidents">Traffic Accidents</option>
+                {{#each getCategoryList}}
+                    <option value="{{name}}">{{name}}</option>
+                {{/each}}
             </select>
             </div>
         </div>
@@ -61,6 +62,7 @@
             <div class="col-sm-10">
             <select class="form-control filter-case" name="severity" id ="filter-case-severity">
                 <option value="All">All</option>
+                <option value="N/A">N/A</option>
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
@@ -88,13 +90,7 @@
         <td>{{this.title}}</td>
         <td>{{this.category}}</td>
         <td>{{this.address}}</td>
-        <td>   
-            {{#if isSeveritySet}}
-                <span>N/A</span>
-            {{else}}
-                {{this.severity}}
-            {{/if}}
-        </td>
+        <td>{{this.severity}}</td>
         <!-- <td>{{this.createdOn}}</td> -->
         <td>{{this.status}}</td>
         <td>

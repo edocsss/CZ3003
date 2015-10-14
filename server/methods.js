@@ -300,7 +300,7 @@ Meteor.methods({
 			if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) {
 				status = "Approved";
 				var subject = "🔔 " + category + " at " + address + ".";
-				var content = "We have received a report of " + category + " with details: " +
+				var content = "We have received a report of " + category + " with details: <br>" +
 					"Address     : " + address + "<br>" +
 					"Description : " + description + "<br>" +
 					"Severity        : " + severity + "<br>" +
@@ -317,6 +317,14 @@ Meteor.methods({
 				var contentTwitter = "A " + category + " has been reported at " + address +
 									 " on " + Meteor.call('dateToString', Meteor.call('convertToGMT8', new Date())) + ".";
 				Meteor.call("postTweet", contentTwitter);
+
+				var contentAgency = "We have received a report of " + category + " with details: <br>" +
+					"Address     : " + address + "<br>" +
+					"Description : " + description + "<br>" +
+					"Severity        : " + severity + "<br>" +
+					"Date/time   : " + Meteor.call('dateToString', Meteor.call('convertToGMT8', new Date())) + "<br>" +
+					"Please be in charge of this case.<br>";
+				Meteor.call("informAgency", subject, contentAgency, category);
 			}
 		}
  		
@@ -333,6 +341,12 @@ Meteor.methods({
 			status: status,
 			lastUpdatedOn: Meteor.call('convertToGMT8', new Date()),
 			createdOn: Meteor.call('convertToGMT8', new Date())
+		});
+	},
+
+	informAgency: function (subject, content, category) {
+		Agencies.find({ category: category }).forEach(function (agency) {
+			Meteor.call('sendEmail', agency.email, "ID70 Crisis Management System <id70cms@cms.com>", subject, content);
 		});
 	},
 

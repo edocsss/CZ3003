@@ -86,6 +86,12 @@ Template.caseList.events({
     }
 });
 
+Template.caseListFilter.helpers({
+    getCategoryList: function () {
+        return Categories.find();
+    }
+});
+
 Template.caseListItem.helpers({
     isSeveritySet: function () {
         return this.severity == "NULL";

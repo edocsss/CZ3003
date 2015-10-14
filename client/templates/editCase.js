@@ -30,7 +30,7 @@ Template.editCase.onRendered(function () {
 	 			});
 
 	 			return false;
-	 		} else if (!severity && status !== "Rejected") {
+	 		} else if (severity === "N/A" && status !== "Rejected" && status !== "Pending") {
 	 			editCaseValidator.showErrors({
 	 				severity: 'Please select the correct Case Severity!'
 	 			});
@@ -54,6 +54,7 @@ Template.editCase.onRendered(function () {
 	 	},
 	 	rules: {
 	 		title: {
+	 			minlength: 3,
 	 			maxlength: 50,
 	 			required: true
 	 		},
@@ -67,10 +68,12 @@ Template.editCase.onRendered(function () {
 	 			severityCheck: true
 	 		},
 	 		address: {
+	 			minlength: 3,
 	 			maxlength: 100,
 	 			required: true
 	 		},
 	 		description: {
+	 			minlength: 3,
 	 			maxlength: 500,
 	 			required: true
 	 		}
@@ -123,6 +126,12 @@ jQuery.validator.addMethod("severityCheck", function(value, element) {
 Template.editCase.helpers({
 	isCategorySelected: function (k) {
 		return k === this.category;
+	},
+	isSeveritySelected: function (k) {
+		return k === this.severity;
+	},
+	getCategoryList: function () {
+		return Categories.find();
 	}
 });
 

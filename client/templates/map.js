@@ -199,9 +199,7 @@ Template.map.onCreated(function () {
  		}
 
  		currentUser = Meteor.user();
-		var tmpContent = contentStringTop; 
-		if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) tmpContent = tmpContent + contentStringMid; //form elements only for logged-in accounts	 
-		tmpContent = tmpContent + contentStringBot;
+		var tmpContent = Blaze.toHTML(Template.mapFormContent); 
 		infowindow = new google.maps.InfoWindow({ content: tmpContent });
 
 		// Set infowindow events --> add jQuery validator also
@@ -220,7 +218,7 @@ Template.map.onCreated(function () {
 					if (!!currentUser && ['admin', 'call-center-operator'].indexOf(currentUser.profile.type) > -1) {
 						severity    = $('#create-case-severity').val();
 					} else {
-						severity    = "NULL";
+						severity    = "N/A";
 					}
 
 					if (!type ) {
@@ -251,7 +249,7 @@ Template.map.onCreated(function () {
 				rules: {
 					title: {
 						minlength: 3,
-						maxlength: 30,
+						maxlength: 50,
 						required: true
 					},
 					type: {
@@ -274,8 +272,8 @@ Template.map.onCreated(function () {
 
 				messages: {
 					title: {
-						minlength: "Title must be between 3 to 30 characters long!",
-						maxlength: "Title must be between 3 to 30 characters long!",
+						minlength: "Title must be between 3 to 50 characters long!",
+						maxlength: "Title must be between 3 to 50 characters long!",
 						required: "You must enter a case title!"
 					},
 					type: {
@@ -343,211 +341,3 @@ Template.map.helpers({
 		}
 	}
 });
-
-
-Template.map.onRendered(function () {
-
-	contentString =   
-		'<div class="container-fluid windowbox" >'+
-			'<h5 id="firstHeading" class="text-center">Create New Case</h5>'+
-
-			'<form class="form-horizontal center-block" id ="create-case-form">' +
-			 
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-						'<input type="text" class="form-control formwidth" name="title" placeholder="Title" id ="create-case-title">'+
-					'</div>'+
-				'</div>'+
-
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-						'<input type="text" class="form-control formwidth" name="address" placeholder="Address" id ="create-case-address"/>'+
-					'</div>'+
-				'</div>'+
-
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-		    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
-		    				'<option selected disabled hidden value="">Case Type</option>' +
-						 	'<option value="Fire Accidents">Fire Accidents</option>'+
-						  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
-						'</select>'+
-					'</div>'+
-				'</div>'+
-				  
-				'Description:' + 
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-						'<textarea class="form-control formwidth" name="description" id ="create-case-description"></textarea>' +
-					'</div>'+
-				'</div>'+
-				
-				'<div class="form-group formwidth">'+
-					'<div class="col-sm-6">'+
-						'<button type="reset"  class="btn btn-primary">Reset</button>'+ 
-					'</div>'+
-					'<div class="col-sm-6">'+ 
-						'<button type="submit" class="btn btn-primary create-case-submit">Submit</button>' +
-					'</div>'+
-				'</div>'+
-				
-			'</form>'+
-		'</div>' ;
-
-	contentStringTop =  
-		'<div class="container windowbox" >'+
-			'<h5 id="firstHeading" class="text-center">Create New Case</h5>'+
-
-			'<form class="form-horizontal center-block" id ="create-case-form">' +
-			 
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-						'<input type="text" class="form-control formwidth" name="title" placeholder="Title" id ="create-case-title">'+
-					'</div>'+
-				'</div>'+
-
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-						'<input type="text" class="form-control formwidth" name="address" placeholder="Address" id ="create-case-address"/>'+
-					'</div>'+
-				'</div>'+
-
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-		    			'<select class="form-control formwidth" name="type" width="200" id ="create-case-type">' +
-		    				'<option selected disabled hidden value="">Case Type</option>' +
-						 	'<option value="Fire Accidents">Fire Accidents</option>'+
-						  	'<option value="Traffic Accidents">Traffic Accidents</option>'+
-						'</select>'+
-					'</div>'+
-				'</div>';
-		
-	contentStringMid = 
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-		    			'<select class="form-control formwidth" name="severity" width="200" id ="create-case-severity">' +
-		    				'<option selected disabled hidden value="">Severity Level</option>' +
-						 	'<option value="Low">Low</option>'+
-						  	'<option value="Medium">Medium</option>'+
-						  	'<option value="High">High</option>'+ 
-						  	'<option value="Very High">Very High</option>'+ 
-						'</select>'+
-					'</div>'+
-				'</div>';
-				
-	contentStringBot =
-				'Description:' + 
-				'<div class="form-group">'+
-					'<div class="col-sm-12">'+
-						'<textarea class="form-control formwidth" name="description" id ="create-case-description"></textarea>' +
-					'</div>'+
-				'</div>' +
-				'<div class="form-group formwidth">'+
-					'<div class="col-sm-6">'+
-						'<button type="reset"  class="btn btn-default">Reset</button>'+ 
-					'</div>'+
-					'<div class="col-sm-6">'+ 
-						'<button type="submit" class="btn btn-primary create-case-submit">Submit</button>' +
-					'</div>'+
-				'</div>'+
-				
-			'</form>'+
-		'</div>' ;
-
-});
-
-
-/*Template.map.events({
-	'click .create-case-submit': function () {
-		console.log('click');
-		// from Kenrick, just to add some data to db, plz modify accordingly. Thank you :)
- 		var title = $('#create-case-title').val();
- 		var category = $('#create-case-category').val();
- 		var description = $('#create-case-description').val();
- 		var address = $('#create-case-address').val();
- 		var coordinate = marker.position;
- 		var severity = $('#create-case-severity').val();
-		Meteor.call('addCase', title, category, description, address, coordinate, severity, function (error, result) {
- 			if (error) {
- 				swal('Oops!', error.reason, 'error');
- 			} else {
- 				swal({
- 					title: 'Thank you!',
- 					text: 'The new case has been reported!',
- 					type: 'success'
- 				});
- 			}
- 		});
-	}
-});*/
-
-
-/*
-
-	TODO
-
-	Benerin form --> ikutin Bootstrap classes (see resetPasswordForm for example) V
-	Form checking --> use jQuery validator (see other JS files loginForm.js) vv
-	create insert method @ methods.js v
-	Marker --> different color and undragable for existing cases v
-	Load existing cases marker initially v
-	Observe realtime cases (see below)
-	Kalau ada user lgsg approve, else pending + severity NULL v
-
-*/
-/*	reference
-
-var markers = {};   
-
-Markers.find().observe({  
-  added: function(document) {
-    // Create a marker for this document
-    var marker = new google.maps.Marker({
-      draggable: true,
-      animation: google.maps.Animation.DROP,
-      position: new google.maps.LatLng(document.lat, document.lng),
-      map: map.instance,
-      // We store the document _id on the marker in order 
-      // to update the document within the 'dragend' event below.
-      id: document._id
-    });
-
-    // This listener lets us drag markers on the map and update their corresponding document.
-    google.maps.event.addListener(marker, 'dragend', function(event) {
-      Markers.update(marker.id, { $set: { lat: event.latLng.lat(), lng: event.latLng.lng() }});
-    });
-
-    // Store this marker instance within the markers object.
-    markers[document._id] = marker;
-  },
-  changed: function(newDocument, oldDocument) {
-    markers[newDocument._id].setPosition({ lat: newDocument.lat, lng: newDocument.lng });
-  },
-  removed: function(oldDocument) {
-    // Remove the marker from the map
-    markers[oldDocument._id].setMap(null);
-
-    // Clear the event listener
-    google.maps.event.clearInstanceListeners(
-      markers[oldDocument._id]);
-
-    // Remove the reference to this marker instance
-    delete markers[oldDocument._id];
-  }
-});	
-	var marker;
-
-	function placeMarker(location) {
-		if ( marker ) {
-			marker.setPosition(location);
-		} else {
-			marker = new google.maps.Marker({
-				position: location,
-				map: GoogleMaps.maps.map.instance
-			});
-		}
-	}
-
-	google.maps.event.addListener(GoogleMaps.maps.map.instance, 'click', function(event) {
-		placeMarker(event.latLng);
-	});*/

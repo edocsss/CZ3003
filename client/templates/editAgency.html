@@ -19,9 +19,9 @@
 					<label for="category" class="col-sm-2 control-label">Category:</label>
 					<div class="col-sm-10">
 						<select class="form-control" name="category" id="edit-agency-category">
-							<option value="select" selected="{{isCategorySelected 'select'}}">Select Agency Category</option>
-							<option value="Traffic Accidents" selected="{{isCategorySelected 'Traffic Accidents'}}">Traffic Accidents</option>
-							<option value="Fire Accidents" selected="{{isCategorySelected 'Fire Accidents'}}">Fire Accidents</option>
+							{{#each getCategoryList}}
+			                    <option value="{{name}}" selected="isCategorySelected '{{name}}'">{{name}}</option>
+			                {{/each}}
 						</select>
 					</div>
 				</div>

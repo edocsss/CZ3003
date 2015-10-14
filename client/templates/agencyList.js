@@ -113,6 +113,9 @@ Template.agencyList.helpers({
 	agencyList: function () {
 		return 	Agencies.find();
 	},
+	getCategoryList: function () {
+		return Categories.find();
+	}
 });
 
 Template.agencyItem.events({
