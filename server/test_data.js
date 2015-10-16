@@ -151,7 +151,7 @@ Meteor.startup(function () {
 				H: 1.342990,
 				L: 103.693146
 			},
-			severity: "NULL",
+			severity: "N/A",
 			status: 'Pending',
 			createdBy: 'system',
 			createdOn: new Date()
@@ -226,7 +226,7 @@ Meteor.startup(function () {
 				H: 1.313535,
 				L: 103.824458
 			},
-			severity: "NULL",
+			severity: "N/A",
 			status: 'Pending',
 			createdBy: 'system',
 			createdOn: new Date()
@@ -286,7 +286,7 @@ Meteor.startup(function () {
 				H: 1.345265,
 				L: 103.695420
 			},
-			severity: "NULL",
+			severity: "N/A",
 			status: 'Pending',
 			createdBy: 'system',
 			createdOn: new Date()
