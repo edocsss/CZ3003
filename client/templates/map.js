@@ -1,3 +1,7 @@
+/**
+*	Author: Joshua Aristo
+*/
+
 Meteor.startup(function () {
 	GoogleMaps.load();
 });

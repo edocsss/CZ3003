@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara	
+*/
+
 Template.loginForm.onRendered(function () {
 	var loginValidator = $('#login-form').validate({
 		submitHandler: function (event) {

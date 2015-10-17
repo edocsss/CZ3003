@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara	
+*/
+
 Template.enrollAccountForm.onCreated(function () {
 	if (Accounts._resetPasswordToken) {
 		Session.set('enrollAccountToken', Accounts._resetPasswordToken);

@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara	
+*/
+
 Template.mapFormContent.helpers({
 	getCategoryList: function () {
 		return Categories.find();

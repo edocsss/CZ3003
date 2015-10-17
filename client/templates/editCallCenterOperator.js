@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara	
+*/
+
 Template.editCallCenterOperator.onRendered(function () {
 	var userId = this.data._id;
 	var editOperatorValidator = $('#edit-operator-form').validate({

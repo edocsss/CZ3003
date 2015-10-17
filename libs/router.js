@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara, Kenrick, Joshua Aristo, Peter
+*/
+
 Router.configure({
 	layoutTemplate: 'mainBody',
 	loadingTemplate: 'loading'

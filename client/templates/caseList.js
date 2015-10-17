@@ -1,3 +1,7 @@
+/**
+*   Author: Kenrick
+*/
+
 Template.caseList.onRendered(function () {
     // view one case in modal
     // edit --> edit status

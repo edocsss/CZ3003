@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara	
+*/
+
 Template.resetPasswordForm.onCreated(function () {
 	if (Accounts._resetPasswordToken) {
 		Session.set('resetPasswordToken', Accounts._resetPasswordToken);

@@ -1,3 +1,7 @@
+/**
+*	Author: Peter
+*/
+
 Template.agencyList.onRendered(function () {
 	 var addAgencyValidator = $('#add-agency-form').validate({
 	 	submitHandler: function (form, event) {

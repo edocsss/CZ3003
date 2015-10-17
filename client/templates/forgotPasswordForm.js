@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara	
+*/
+
 Template.forgotPasswordForm.onRendered(function () {
 	var forgotPasswordValidator = $('#forgot-password-form').validate({
 		submitHandler: function (form, event) {

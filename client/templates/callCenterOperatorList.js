@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara	
+*/
+
 Template.callCenterOperatorList.onRendered(function () {
 	 var addOperatorValidator = $('#add-operator-form').validate({
 	 	submitHandler: function (form, event) {

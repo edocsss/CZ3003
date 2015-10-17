@@ -1,3 +1,7 @@
+/**
+*	Author: Peter
+*/
+
 Template.subscribeDropdown.onRendered(function () {
 	var subscribeValidator = $('#subscribe-form').validate({
 		submitHandler: function (form, event) {

@@ -1,3 +1,7 @@
+/**
+*	Author: Peter
+*/
+
 Template.editAgency.onRendered(function () {
 	var agencyId = this.data._id;
 	var editAgencyValidator = $('#edit-agency-form').validate({

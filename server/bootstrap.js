@@ -1,3 +1,7 @@
+/**
+*	Author: Edwin Candinegara, Kenrick, Joshua Aristo, Peter
+*/
+
 Meteor.startup(function () {
 	// Setting up the Case Categories
 	var categoryList = ["Traffic Accidents", "Fire Accidents", "Gas Leak", "Ambulance Emergency"];

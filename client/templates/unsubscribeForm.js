@@ -1,3 +1,7 @@
+/**
+*	Author: Peter	
+*/
+
 Template.unsubscribeForm.events({
 	'click #unsubscribeButton': function (event) {
 		event.preventDefault();

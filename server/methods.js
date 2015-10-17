@@ -1,4 +1,12 @@
+/**
+*	Author: Edwin Candinegara, Kenrick, Joshua Aristo, Peter
+*/
+
 Meteor.methods({
+	/**
+	*	Add a new subscriber to the system. This subscriber will be sent an email in case there is a new
+	*	case update.
+	*/
 	addSubscriber: function (emailAddress) {
 		// Check whether this emailAddress exists in DB
 		// If it exists, return a Meteor Error
@@ -30,10 +38,17 @@ Meteor.methods({
 		Meteor.call('sendEmail', emailAddress, "ID70 Crisis Management System <id70cms@cms.com>", "Subscripton", html);
 	},
 
+	/**
+	*	This method removes a particular subscriber from the database.	
+	*/
 	removeSubscriber: function (subscriberId) {
 		Subscribers.remove(subscriberId);
 	},
 
+	/**
+	*	A general method which is capable of sending an email given the required details such as the target email address,
+	*	the originating email address, the subject, and the content of the email.
+	*/
 	sendEmail: function (to, from, subject, html) {
 		check([to, from, subject, html], [String]);
 		this.unblock();
@@ -46,6 +61,9 @@ Meteor.methods({
 		});
 	},
 
+	/**
+	*	Broadcast emails to subscribers in case there is a new case update.
+	*/
 	broadcastEmail: function (subject, content) {
 		var base_url = Meteor.absoluteUrl() + "unsubscribe/";
 		var html =  "Dear subscribers," +
@@ -70,7 +88,9 @@ Meteor.methods({
 		});
 	},
 
-	// Expecting the created or updated case object (the whole object)
+	/**
+	*	Post a case update to ID70 Facebook Page through a HTTP POST request.
+	*/
 	postFB: function (content) {
 		// Craft the message here
 		var url = "https://graph.facebook.com/758909260920907/feed";
@@ -90,6 +110,9 @@ Meteor.methods({
 		});
 	},
 
+	/**
+	*	Post a Tweet to ID70 Twitter account using a Meteor Twitter API Package
+	*/
 	postTweet: function (content) {
 		var url = 'statuses/update';
 
@@ -104,6 +127,12 @@ Meteor.methods({
 		});
 	},
 
+	/**
+	*	Send a case summary to the Prime Minister office. The cases included in the summary will be all cases
+	*	up to that point in time when this email is sent.
+	*
+	*	This method is called by a cron job for every 30 minutes.
+	*/
 	sendCaseSummary: function () {
 		// Construct the summary message here
 		var currentDate = Meteor.call('convertToGMT8', new Date());
@@ -176,7 +205,9 @@ Meteor.methods({
 			content);
 	},
 
-	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	/**
+	*	Creates a new agency entry into the database.
+	*/
 	addAgency: function (name, email, category, contact, address) {
 		var currentUser = Meteor.user();
 		if (currentUser.profile.type !== 'admin') {
@@ -203,7 +234,9 @@ Meteor.methods({
 		});
 	},
 
-	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	/**
+	*	Updates an agency entry in the database.	
+	*/
 	editAgency: function (agencyId, name, category, contact, address) {
 		var currentUser = Meteor.user();
 		if (currentUser.profile.type !== 'admin') {
@@ -225,7 +258,9 @@ Meteor.methods({
 		});
 	},
 
-	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	/**
+	*	Delete a particular agency from the database	
+	*/
 	deleteAgency: function (agencyId) {
 		var currentUser = Meteor.user();
 		if (currentUser.profile.type !== 'admin') {
@@ -235,7 +270,9 @@ Meteor.methods({
 		Agencies.remove(agencyId);
 	},
 
-	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	/**
+	*	Creates a new call center operator account entry into the database.
+	*/
 	addCallCenterOperator: function (name, email, contact, address) {
 		var currentUser = Meteor.user();
 		if (currentUser.profile.type !== 'admin') {
@@ -259,7 +296,9 @@ Meteor.methods({
 		Accounts.sendEnrollmentEmail(newOperatorId);
 	},
 
-	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	/**
+	*	Edit a particular call center operator entry into the database.
+	*/
 	editCallCenterOperator: function (userId, name, contact, address) {
 		var currentUser = Meteor.user();
 		if (currentUser.profile.type !== 'admin') {
@@ -278,7 +317,9 @@ Meteor.methods({
 		});
 	},
 
-	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	/**
+	*	Delete a particular call center operator account entry from the database.
+	*/
 	deleteCallCenterOperator: function (userId) {
 		var currentUser = Meteor.user();
 		if (currentUser.profile.type !== 'admin') {
@@ -288,6 +329,9 @@ Meteor.methods({
 		Meteor.users.remove(userId);
 	},
 
+	/**
+	*	Creates a new case entry into the database.
+	*/
 	addCase: function (title, category, description, address, coordinate, severity) {
 		console.log(coordinate);
 		// todo: limit length of address
@@ -341,12 +385,18 @@ Meteor.methods({
 		});
 	},
 
+	/**
+	*	Inform agencies related to a particular case category when a new case of that particular category is approved.
+	*/
 	informAgency: function (subject, content, category) {
 		Agencies.find({ category: category }).forEach(function (agency) {
 			Meteor.call('sendEmail', agency.email, "ID70 Crisis Management System <id70cms@cms.com>", subject, content);
 		});
 	},
 
+	/**
+	*	Edit a particular case entry into the database.
+	*/
 	editCase: function (caseId, title, category, description, address, coordinate, severity, status) {
 		var currentUser = Meteor.user();
 		if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) === -1) {
@@ -415,7 +465,9 @@ Meteor.methods({
 		Meteor.call("postTweet", contentTwitter);
 	},
 
-	// MUST CHECK THAT THE CURRENT USER IS AN ADMIN, IF NOT, then return an error, raise a SWAL
+	/**
+	*	Delete a particular case entry from the database.
+	*/
 	deleteCase: function (caseId) {
 		var currentUser = Meteor.user();
 		if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) === -1) {
@@ -425,6 +477,9 @@ Meteor.methods({
 		Cases.remove(caseId);
 	},
 
+	/**
+	*	A method which converts a date object into a date with the GMT+8 timezone
+	*/
 	convertToGMT8: function (date) {
 		var utc = date.getTime() + date.getTimezoneOffset() * 60 * 1000;
 
@@ -432,6 +487,9 @@ Meteor.methods({
 		return new Date(utc + singaporeUTCOffset * 60 * 60 * 1000);
 	},
 
+	/**
+	*	A method which converts a date into a specific String format
+	*/
 	dateToString: function (date) {
 		var hour = date.getHours() < 10? "0" + date.getHours() : date.getHours();
 		var minute = date.getMinutes() < 10? "0" + date.getMinutes() : date.getMinutes();

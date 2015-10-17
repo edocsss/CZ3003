@@ -1,3 +1,7 @@
+/**
+*	Author: Kenrick
+*/
+
 Template.editCase.onRendered(function () {
 	var caseId = this.data._id,
 		currentCase = Cases.findOne(caseId);
