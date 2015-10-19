@@ -33,3 +33,4 @@ npm-container
 meteorhacks:ssr
 autopublish
 mrt:moment
+meteorhacks:kadira

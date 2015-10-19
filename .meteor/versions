@@ -49,6 +49,8 @@ logging@1.0.8
 meteor@1.1.9
 meteor-base@1.0.1
 meteorhacks:async@1.0.0
+meteorhacks:kadira@2.23.6
+meteorhacks:meteorx@1.4.1
 meteorhacks:npm@1.5.0
 meteorhacks:ssr@2.1.2
 minifiers@1.1.7
@@ -57,6 +59,7 @@ mobile-experience@1.0.1
 mobile-status-bar@1.0.6
 mongo@1.1.2
 mongo-id@1.0.1
+mongo-livedata@1.0.9
 mrt:cron@0.0.1
 mrt:moment@2.8.1
 npm-bcrypt@0.7.8_2

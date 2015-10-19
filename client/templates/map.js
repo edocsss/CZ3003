@@ -172,11 +172,13 @@ Template.map.onCreated(function () {
 
 	function placeMarker(location) {
 		if ( newMarker ) { 
+			console.log(location);
 			newMarker.setMap(GoogleMaps.maps.map.instance); 
-			newMarker.position = {
-				lat: location.lat(),
-				lng: location.lng()
-			};
+			// newMarker.position = {
+			// 	lat: location.lat(),
+			// 	lng: location.lng()
+			// };
+			newMarker.setPosition({lat: location.lat(), lng:location.lng()});
 
 			infowindow.close();	//remove this if we dont want to close window on move
 
@@ -208,7 +210,7 @@ Template.map.onCreated(function () {
  		}
 
  		currentUser = Meteor.user();
-		var tmpContent = Blaze.toHTML(Template.mapFormContent); 
+		var tmpContent = Blaze.toHTML(Template.mapFormContent);
 		infowindow = new google.maps.InfoWindow({ content: tmpContent });
 
 		// Set infowindow events --> add jQuery validator also
@@ -240,7 +242,7 @@ Template.map.onCreated(function () {
 						});
 					}
 					
-
+					console.log(coordinate.lat(), coordinate.lng());
 					Meteor.call('addCase', title, type, description, address, {H: coordinate.lat(), L: coordinate.lng() }, severity ,function (error, result) {
 						if (error) {
 							swal('Oops!', error.reason, 'error');
