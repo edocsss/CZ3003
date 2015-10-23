@@ -41,7 +41,7 @@ Template.editCase.onRendered(function () {
 
 	 			return false;
 	 		} else {
-		 		Meteor.call('editCase', caseId, title, category, description, address, coordinate, severity, status, function (error, result) {
+		 		Meteor.call('editCase', caseId, title, category, description, address, coordinate, severity, status, true, function (error, result) {
 		 			if (error) {
 		 				swal('Edit Case', error.reason, 'error');
 		 			} else {

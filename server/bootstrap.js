@@ -60,20 +60,6 @@ Meteor.startup(function () {
 		return html;
 	};
 
-	// Setting up the case summary cron job
-	var cron = new Meteor.Cron({
-		// * * * * * --> every minute
-		// 30 * * * * --> every hour, when the clock hits the minute = 30
-		events: {
-			'30 * * * *': function () {
-				Meteor.call('sendCaseSummary');
-			},
-			'0 * * * * ': function () {
-				Meteor.call('sendCaseSummary');
-			}
-		}
-	});
-
 	// Setting up Twitter API
 	TwitterApi = Meteor.npmRequire('twit');
 	twitter = new TwitterApi({
@@ -81,5 +67,42 @@ Meteor.startup(function () {
 		consumer_secret: 'suDNqDBXu91XAYJIoUERfDH0nuU5aTVavMpSLbi6rQTuuzNP6p',
 		access_token: '3668823973-YgRBfVC6vbjnzN1Yws6coRD5MprEOdr7mzBct0j',
 		access_token_secret: 'HM4WHpwoq9tX2pTVctJJ9ChauZbI7ipXgeYc7mJvIe9b8'
+	});
+
+	Meteor.setInterval(function () {
+		Cases.find({}).forEach(function (c) {
+			console.log(c);
+			Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
+		});	
+	}, 30000);
+
+	// Setting up the case summary cron job
+	var cron = new Meteor.Cron({
+		// * * * * * --> every minute
+		// 30 * * * * --> every hour, when the clock hits the minute = 30
+		events: {
+			'0 * * * * ': function () {
+				Meteor.call('sendCaseSummary');
+				Cases.find({}).forEach(function (c) {
+					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
+				});	
+			},
+			'15 * * * *': function () {
+				Cases.find({}).forEach(function (c) {
+					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
+				});			
+			},
+			'30 * * * *': function () {
+				Meteor.call('sendCaseSummary');
+				Cases.find({}).forEach(function (c) {
+					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
+				});	
+			},
+			'45 * * * *': function () {
+				Cases.find({}).forEach(function (c) {
+					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
+				});	
+			}
+		}
 	});
 });

@@ -105,7 +105,7 @@ Meteor.methods({
 			if (error) {
 				console.log(error);
 			} else {
-				// console.log(result);
+				console.log(result);
 			}
 		});
 	},
@@ -397,11 +397,11 @@ Meteor.methods({
 	/**
 	*	Edit a particular case entry into the database.
 	*/
-	editCase: function (caseId, title, category, description, address, coordinate, severity, status) {
-		var currentUser = Meteor.user();
-		if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) === -1) {
-			throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
-		}
+	editCase: function (caseId, title, category, description, address, coordinate, severity, status, broadcast) {
+		// var currentUser = Meteor.user();
+		// if (['admin', 'call-center-operator'].indexOf(currentUser.profile.type) === -1) {
+		// 	throw new Meteor.Error("Unauthorized account", "Your account is not authorized!");
+		// }
 		var oldCase = Cases.findOne(caseId);
 		Cases.update(caseId, {
 			$set: {
@@ -460,9 +460,11 @@ Meteor.methods({
 			contentTwitter = "[UPDATE] " + category + " has been reported at " + address + " on " + Meteor.call('dateToString', oldCase.createdOn) +".";
 		}
 
-		Meteor.call("broadcastEmail", subject, content);
-		Meteor.call("postFB", contentFB);
-		Meteor.call("postTweet", contentTwitter);
+		if (broadcast) {
+			Meteor.call("broadcastEmail", subject, content);
+			Meteor.call("postFB", contentFB);
+			Meteor.call("postTweet", contentTwitter);
+		}
 	},
 
 	/**
