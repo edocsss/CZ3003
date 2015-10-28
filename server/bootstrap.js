@@ -69,13 +69,6 @@ Meteor.startup(function () {
 		access_token_secret: 'HM4WHpwoq9tX2pTVctJJ9ChauZbI7ipXgeYc7mJvIe9b8'
 	});
 
-	Meteor.setInterval(function () {
-		Cases.find({}).forEach(function (c) {
-			console.log(c);
-			Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
-		});	
-	}, 30000);
-
 	// Setting up the case summary cron job
 	var cron = new Meteor.Cron({
 		// * * * * * --> every minute
@@ -83,25 +76,9 @@ Meteor.startup(function () {
 		events: {
 			'0 * * * * ': function () {
 				Meteor.call('sendCaseSummary');
-				Cases.find({}).forEach(function (c) {
-					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
-				});	
-			},
-			'15 * * * *': function () {
-				Cases.find({}).forEach(function (c) {
-					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
-				});			
 			},
 			'30 * * * *': function () {
 				Meteor.call('sendCaseSummary');
-				Cases.find({}).forEach(function (c) {
-					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
-				});	
-			},
-			'45 * * * *': function () {
-				Cases.find({}).forEach(function (c) {
-					Meteor.call('editCase', c._id, c.title, c.category, c.description, c.address, c.coordinate, c.severity, c.status, false);	
-				});	
 			}
 		}
 	});

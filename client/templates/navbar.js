@@ -2,6 +2,14 @@
 *	Author: Edwin Candinegara	
 */
 
+Template.navbar.onRendered(function () {
+	// Initial weather reading
+	getWeather();
+
+	// Update weather every 5 minutes
+	Meteor.setInterval(getWeather, 30000);
+});
+
 Template.navbar.helpers({
 	isUserAdmin: function () {
 		var userType = Meteor.user().profile.type;
@@ -21,3 +29,27 @@ Template.navbar.events({
 		});
 	}
 });
+
+function getWeather() {
+	$.simpleWeather({
+		location: 'Singapore, Singapore',
+		woeid: '23424948',
+		unit: 'c',
+		success: function (weather) {
+			var temp = weather.temp;
+			var tempUnit = weather.units.temp;
+			var currentCondition = weather.currently;
+			var codeCondition = weather.code;
+			var html = "<h2 class='weather-header'><i class='weather-logo weather-icon-" + 
+						codeCondition + 
+						"'></i>&nbsp;" + 
+						temp + 
+						"&deg" + 
+						tempUnit + 
+						" " +
+						currentCondition +
+						"</h2>";
+			$(".weather-status").html(html);
+		}
+	});
+}
