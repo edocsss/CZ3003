@@ -59,27 +59,4 @@ Meteor.startup(function () {
 
 		return html;
 	};
-
-	// Setting up Twitter API
-	TwitterApi = Meteor.npmRequire('twit');
-	twitter = new TwitterApi({
-		consumer_key: 'Tw6sIuQJ50pUtAka6gqyaTlnN',
-		consumer_secret: 'suDNqDBXu91XAYJIoUERfDH0nuU5aTVavMpSLbi6rQTuuzNP6p',
-		access_token: '3668823973-YgRBfVC6vbjnzN1Yws6coRD5MprEOdr7mzBct0j',
-		access_token_secret: 'HM4WHpwoq9tX2pTVctJJ9ChauZbI7ipXgeYc7mJvIe9b8'
-	});
-
-	// Setting up the case summary cron job
-	var cron = new Meteor.Cron({
-		// * * * * * --> every minute
-		// 30 * * * * --> every hour, when the clock hits the minute = 30
-		events: {
-			'0 * * * * ': function () {
-				Meteor.call('sendCaseSummary');
-			},
-			'30 * * * *': function () {
-				Meteor.call('sendCaseSummary');
-			}
-		}
-	});
 });
